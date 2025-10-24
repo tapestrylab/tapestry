@@ -36,20 +36,6 @@ importers:
         specifier: ^4.0.2
         version: 4.0.2(@types/node@24.9.1)(@vitest/ui@4.0.2)(jiti@2.6.1)(tsx@4.20.6)
 
-  apps/docs:
-    devDependencies:
-      typescript:
-        specifier: ^5.4.2
-        version: 5.9.3
-
-  apps/playground:
-    devDependencies:
-      typescript:
-        specifier: ^5.4.2
-        version: 5.9.3
-
-  apps/studio: {}
-
   packages/extract:
     dependencies:
       commander:
@@ -78,31 +64,7 @@ importers:
         specifier: ^19.2.2
         version: 19.2.2
 
-  packages/graph:
-    devDependencies:
-      typescript:
-        specifier: ^5.4.2
-        version: 5.9.3
-
-  packages/plugin-figma:
-    devDependencies:
-      typescript:
-        specifier: ^5.4.2
-        version: 5.9.3
-
-  packages/plugin-vscode:
-    devDependencies:
-      typescript:
-        specifier: ^5.4.2
-        version: 5.9.3
-
-  packages/resolve: {}
-
-  packages/shared:
-    devDependencies:
-      typescript:
-        specifier: ^5.4.2
-        version: 5.9.3
+  packages/graph: {}
 
 packages:
 
