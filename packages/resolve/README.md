@@ -1,0 +1,360 @@
+# @tapestrylab/resolve
+
+> Unified system for resolving component, docs, and dependency references across the Tapestry ecosystem
+
+## Overview
+
+The `@tapestrylab/resolve` package provides a flexible, plugin-based resolution system for locating modules, components, and dependencies. It abstracts away where things live—whether in a local filesystem, fetched from a CDN, or retrieved from a remote registry.
+
+Perfect for:
+- **Playground environments** that need to resolve user-uploaded components and npm dependencies
+- **Build tools** that need consistent module resolution across different sources
+- **Design system tooling** that needs to locate components and documentation
+
+## Features
+
+- **Multiple Resolution Strategies**: Local filesystem, CDN (esm.sh, jsDelivr, unpkg), and remote registries
+- **Alias Support**: Map short names (e.g., `@ui/Button`) to actual paths
+- **Browser & Node Compatible**: Works in both environments
+- **Caching**: Built-in caching for fast repeated resolutions
+- **TypeScript**: Fully typed with extensive type definitions
+- **Extensible**: Easy to add custom resolution strategies
+
+## Installation
+
+```bash
+pnpm add @tapestrylab/resolve
+```
+
+## Quick Start
+
+```typescript
+import { createResolver, strategies } from '@tapestrylab/resolve';
+
+const resolver = createResolver({
+  strategies: [
+    // Try local files first
+    strategies.local({
+      root: '/src',
+      alias: {
+        '@ui': 'components/ui',
+        '@core': 'components/core'
+      }
+    }),
+    // Fall back to CDN for npm packages
+    strategies.cdn({
+      provider: 'esm.sh',
+      versionMap: {
+        'react': '18.3.1'
+      }
+    })
+  ]
+});
+
+// Resolve a local component
+const button = await resolver.resolve('@ui/Button');
+console.log(button);
+// { id: '@ui/Button', path: '/src/components/ui/Button.tsx', source: 'local' }
+
+// Resolve an npm package
+const react = await resolver.resolve('react');
+console.log(react);
+// { id: 'react', path: 'https://esm.sh/react@18.3.1', source: 'cdn' }
+```
+
+## API
+
+### `createResolver(config)`
+
+Create a new resolver instance.
+
+```typescript
+const resolver = createResolver({
+  strategies: [strategies.local(), strategies.cdn()],
+  cache: true, // Enable caching (default: true)
+  context: {
+    root: '/project',
+    metadata: { /* custom data */ }
+  }
+});
+```
+
+### `resolver.resolve(id, context?)`
+
+Resolve a single module identifier.
+
+```typescript
+const result = await resolver.resolve('@ui/Button');
+// Returns: ResolvedEntry | null
+
+const result = await resolver.resolve('./Button', {
+  importer: '/src/components/index.ts'
+});
+```
+
+### `resolver.resolveMany(ids, context?)`
+
+Resolve multiple identifiers in parallel.
+
+```typescript
+const results = await resolver.resolveMany([
+  '@ui/Button',
+  '@ui/Input',
+  'react',
+  'lodash/debounce'
+]);
+// Returns: Map<string, ResolvedEntry | null>
+```
+
+### `resolver.clearCache()`
+
+Clear all cached resolutions.
+
+```typescript
+resolver.clearCache();
+```
+
+### `resolver.addStrategy(strategy, prepend?)`
+
+Add a new strategy dynamically.
+
+```typescript
+resolver.addStrategy(strategies.remote(), false); // Add to end
+resolver.addStrategy(strategies.local(), true);   // Add to beginning
+```
+
+## Strategies
+
+### Local Strategy
+
+Resolves local filesystem paths with alias support.
+
+```typescript
+strategies.local({
+  root: '/project/src',
+  alias: {
+    '@ui': 'components/ui',
+    '@core': 'components/core',
+    '@utils': 'lib/utils'
+  },
+  extensions: ['.ts', '.tsx', '.js', '.jsx'],
+  checkExists: true // Set to false for browser environments
+})
+```
+
+**Features:**
+- Alias mapping (`@ui/Button` → `components/ui/Button`)
+- Relative imports (`./Button`, `../utils/helper`)
+- Absolute paths (`/usr/local/lib/module`)
+- Extension resolution (tries `.ts`, `.tsx`, `.js`, `.jsx`)
+- Index file resolution (`./components` → `./components/index.ts`)
+
+### CDN Strategy
+
+Resolves npm packages from CDN providers.
+
+```typescript
+strategies.cdn({
+  provider: 'esm.sh', // or 'jsdelivr', 'unpkg'
+  versionMap: {
+    'react': '18.3.1',
+    'react-dom': '18.3.1',
+    '@radix-ui/react-popover': '1.0.7'
+  },
+  verifyAvailability: true, // Check with HEAD request
+  timeout: 5000 // Timeout for availability check (ms)
+})
+```
+
+**Providers:**
+- `esm.sh` (default): Modern ESM CDN
+- `jsdelivr`: Fast, reliable CDN
+- `unpkg`: Popular npm CDN
+
+**Features:**
+- Scoped packages (`@radix-ui/react-popover`)
+- Subpath imports (`lodash/debounce`)
+- Version pinning via `versionMap`
+- Availability verification (optional)
+
+### Remote Strategy
+
+Placeholder for future remote registry support.
+
+```typescript
+strategies.remote({
+  registryUrl: 'https://registry.tapestry.dev',
+  apiKey: 'your-api-key'
+})
+```
+
+**Future Use Cases:**
+- Tapestry Cloud component registry
+- Figma API for design tokens
+- Private component registries
+
+### Custom Strategies
+
+Create your own resolution strategy:
+
+```typescript
+import type { ResolverStrategy } from '@tapestrylab/resolve';
+
+const myStrategy: ResolverStrategy = {
+  name: 'my-custom-strategy',
+  async resolve(id: string, context?) {
+    // Your custom resolution logic
+    if (shouldResolve(id)) {
+      return {
+        id,
+        path: '/resolved/path',
+        source: 'local'
+      };
+    }
+    return null; // Pass to next strategy
+  }
+};
+
+const resolver = createResolver({
+  strategies: [myStrategy, strategies.cdn()]
+});
+```
+
+## Use Cases
+
+### Playground Environment
+
+Resolve user-uploaded components and npm dependencies in the browser:
+
+```typescript
+const resolver = createResolver({
+  strategies: [
+    // User's uploaded components (in-memory filesystem)
+    strategies.local({
+      root: '/playground/uploads',
+      checkExists: false, // Browser environment
+      alias: {
+        '@ui': 'components/ui'
+      }
+    }),
+    // External dependencies from CDN
+    strategies.cdn({
+      provider: 'esm.sh',
+      verifyAvailability: false // Skip for faster resolution
+    })
+  ]
+});
+
+// User imports in their code
+const userButton = await resolver.resolve('@ui/Button');
+const radix = await resolver.resolve('@radix-ui/react-popover');
+```
+
+### Monorepo Build Tool
+
+Resolve internal packages and external dependencies:
+
+```typescript
+const resolver = createResolver({
+  strategies: [
+    strategies.local({
+      root: '/monorepo',
+      alias: {
+        '@company/ui': 'packages/ui/src',
+        '@company/core': 'packages/core/src'
+      }
+    })
+  ]
+});
+
+const component = await resolver.resolve('@company/ui/Button');
+```
+
+### Design System Documentation
+
+Resolve components and examples from multiple sources:
+
+```typescript
+const resolver = createResolver({
+  strategies: [
+    strategies.local({
+      root: '/design-system',
+      alias: {
+        '@ds/components': 'src/components',
+        '@ds/docs': 'docs'
+      }
+    }),
+    strategies.remote({
+      registryUrl: 'https://figma-api.tapestry.dev'
+    })
+  ]
+});
+```
+
+## Types
+
+```typescript
+interface ResolvedEntry {
+  id: string;              // Original identifier
+  path: string;            // Resolved path or URL
+  source?: 'local' | 'cdn' | 'remote';
+}
+
+interface ResolutionContext {
+  root?: string;           // Project root
+  importer?: string;       // Current file (for relative imports)
+  metadata?: Record<string, unknown>;
+}
+
+interface ResolverStrategy {
+  name: string;
+  resolve(id: string, context?: ResolutionContext): Promise<ResolvedEntry | null>;
+}
+```
+
+## Performance
+
+- **Caching**: Successful and failed resolutions are cached by default
+- **Parallel Resolution**: `resolveMany()` resolves multiple identifiers concurrently
+- **Lazy Verification**: CDN availability checks can be disabled for faster resolution
+- **Early Exit**: Strategy pipeline stops at first successful resolution
+
+## Browser Support
+
+The package works in both Node.js and browser environments. For browser usage:
+
+```typescript
+const resolver = createResolver({
+  strategies: [
+    strategies.local({
+      checkExists: false // Disable filesystem checks
+    }),
+    strategies.cdn({
+      verifyAvailability: false // Optional: skip HEAD requests
+    })
+  ]
+});
+```
+
+## Development
+
+```bash
+# Install dependencies
+pnpm install
+
+# Build the package
+pnpm build
+
+# Run tests
+pnpm test
+
+# Run tests in watch mode
+pnpm dev
+
+# Type check
+pnpm type-check
+```
+
+## License
+
+MIT
