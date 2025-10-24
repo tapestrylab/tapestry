@@ -1,0 +1,26 @@
+{
+  "name": "@tapestrylab/graph",
+  "version": "0.0.0",
+  "description": "Shared data model and querying utilities",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "echo \"Build script not yet implemented\"",
+    "dev": "echo \"Dev script not yet implemented\"",
+    "test": "echo \"Test script not yet implemented\"",
+    "lint": "echo \"Lint script not yet implemented\""
+  },
+  "keywords": ["tapestry", "graph", "data-model", "query"],
+  "license": "TBD",
+  "devDependencies": {
+    "typescript": "^5.4.2"
+  }
+}

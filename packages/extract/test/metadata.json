@@ -1,0 +1,179 @@
+[
+  {
+    "type": "component",
+    "name": "Button",
+    "filePath": "/home/gyfchong/Code/tapestrylab/extract/test/Button.tsx",
+    "exportType": "named",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "defaultValue": "Click me",
+        "examples": [
+          "<Button title=\"Click me\" />"
+        ],
+        "description": "The label that goes inside the button"
+      },
+      {
+        "name": "onClick",
+        "type": "() => void",
+        "required": true,
+        "examples": [
+          "<Button onClick={() => void} />"
+        ],
+        "description": "Handler function called when button is clicked"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": "false",
+        "examples": [
+          "<Button disabled={false} />",
+          "<Button disabled />"
+        ],
+        "description": "Whether the button is disabled"
+      }
+    ],
+    "description": "A beautiful button component",
+    "links": [
+      "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button"
+    ],
+    "since": "1.0.0",
+    "examples": [
+      "<Button title=\"Submit\" onClick={handleSubmit} />"
+    ]
+  },
+  {
+    "type": "component",
+    "name": "Button2",
+    "filePath": "/home/gyfchong/Code/tapestrylab/extract/test/Button.tsx",
+    "exportType": "named",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "examples": [
+          "<Button2 title=\"Click me\" />"
+        ],
+        "defaultValue": "Click me"
+      },
+      {
+        "name": "onClick",
+        "type": "() => void",
+        "required": true,
+        "examples": [
+          "<Button2 onClick={() => void} />"
+        ]
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "examples": [
+          "<Button2 disabled={false} />",
+          "<Button2 disabled />"
+        ],
+        "defaultValue": "false"
+      },
+      {
+        "name": "type",
+        "type": "button | submit | reset",
+        "required": false,
+        "examples": [
+          "<Button2 type={button} />",
+          "<Button2 type={submit} />",
+          "<Button2 type={reset} />"
+        ]
+      }
+    ],
+    "description": "Legacy button component",
+    "deprecated": "Use Button instead for better type safety",
+    "extends": [
+      "ButtonHTMLAttributes<HTMLButtonElement>"
+    ]
+  },
+  {
+    "type": "component",
+    "name": "Button3",
+    "filePath": "/home/gyfchong/Code/tapestrylab/extract/test/Button.tsx",
+    "exportType": "named",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "examples": [
+          "<Button3 title=\"Click me\" />"
+        ],
+        "description": "The label that goes inside the button"
+      },
+      {
+        "name": "onClick",
+        "type": "() => void",
+        "required": true,
+        "examples": [
+          "<Button3 onClick={() => void} />"
+        ]
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "examples": [
+          "<Button3 disabled />",
+          "<Button3 disabled={false} />"
+        ]
+      },
+      {
+        "name": "type",
+        "type": "button | submit | reset",
+        "required": false,
+        "examples": [
+          "<Button3 type={button} />",
+          "<Button3 type={submit} />",
+          "<Button3 type={reset} />"
+        ]
+      }
+    ],
+    "description": "A beautiful button3 component",
+    "extends": [
+      "ButtonHTMLAttributes<HTMLButtonElement>"
+    ]
+  },
+  {
+    "type": "component",
+    "name": "Button4",
+    "filePath": "/home/gyfchong/Code/tapestrylab/extract/test/Button.tsx",
+    "exportType": "named",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "examples": [
+          "<Button4 title=\"Click me\" />"
+        ]
+      },
+      {
+        "name": "onClick",
+        "type": "() => void",
+        "required": true,
+        "examples": [
+          "<Button4 onClick={() => void} />"
+        ]
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "examples": [
+          "<Button4 disabled />",
+          "<Button4 disabled={false} />"
+        ]
+      }
+    ]
+  }
+]
