@@ -8,27 +8,27 @@ permissions:
 
 jobs:
   changeset:
-    name: Check changesets
+    name: check changesets
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
+    - name: checkout
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
-    - name: Setup pnpm
+    - name: setup pnpm
       uses: pnpm/action-setup@v4
 
-    - name: Setup Node.js
+    - name: setup node
       uses: actions/setup-node@v4
       with:
         node-version-file: '.nvmrc'
         cache: 'pnpm'
 
-    - name: Install dependencies
+    - name: install
       run: pnpm install --frozen-lockfile
 
-    - name: Check for changesets
+    - name: check changesets
       uses: changesets/action@v1
       with:
         version: pnpm version-packages

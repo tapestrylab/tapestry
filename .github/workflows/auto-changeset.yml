@@ -1,4 +1,4 @@
-name: Auto-Generate Changeset
+name: auto-generate changeset
 
 on:
   pull_request:
@@ -12,36 +12,36 @@ permissions:
 
 jobs:
   auto-changeset:
-    name: Generate changeset from commits
+    name: generate changeset
     runs-on: ubuntu-latest
 
     # Skip if PR title contains [skip changeset]
     if: "!contains(github.event.pull_request.title, '[skip changeset]')"
 
     steps:
-      - name: Checkout repository
+      - name: checkout
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure Git
+      - name: configure git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Setup Node.js
+      - name: setup node
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
 
-      - name: Install pnpm
+      - name: setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10.19.0
 
-      - name: Check for existing changesets
+      - name: check changesets
         id: check-changesets
         run: |
           if [ -d ".changeset" ] && [ "$(find .changeset -name '*.md' ! -name 'README.md' | wc -l)" -gt 0 ]; then
@@ -52,11 +52,11 @@ jobs:
             echo "No changesets found"
           fi
 
-      - name: Generate changeset
+      - name: generate changeset
         if: steps.check-changesets.outputs.exists == 'false'
         run: node scripts/auto-changeset.mjs
 
-      - name: Commit and push changeset
+      - name: commit and push
         if: steps.check-changesets.outputs.exists == 'false'
         run: |
           if git diff --cached --quiet; then
@@ -69,7 +69,7 @@ jobs:
 
           echo "✓ Pushed auto-generated changeset to PR"
 
-      - name: Comment on PR
+      - name: comment on pr
         if: steps.check-changesets.outputs.exists == 'false'
         uses: actions/github-script@v7
         with:
