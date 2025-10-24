@@ -2,9 +2,9 @@ name: auto-generate changeset
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
     branches:
-      - main
+    - main
 
 permissions:
   contents: write
@@ -19,76 +19,52 @@ jobs:
     if: "!contains(github.event.pull_request.title, '[skip changeset]')"
 
     steps:
-      - name: checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+    - name: checkout
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: configure git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+    - name: configure git
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
+    - name: setup node
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
 
-      - name: setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.19.0
+    - name: setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10.19.0
 
-      - name: check changesets
-        id: check-changesets
-        run: |
-          if [ -d ".changeset" ] && [ "$(find .changeset -name '*.md' ! -name 'README.md' | wc -l)" -gt 0 ]; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-            echo "✓ Changesets already exist"
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-            echo "No changesets found"
-          fi
+    - name: check changesets
+      id: check-changesets
+      run: |
+        if [ -d ".changeset" ] && [ "$(find .changeset -name '*.md' ! -name 'README.md' | wc -l)" -gt 0 ]; then
+          echo "exists=true" >> $GITHUB_OUTPUT
+          echo "✓ Changesets already exist"
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+          echo "No changesets found"
+        fi
 
-      - name: generate changeset
-        if: steps.check-changesets.outputs.exists == 'false'
-        run: node scripts/auto-changeset.mjs
+    - name: generate changeset
+      if: steps.check-changesets.outputs.exists == 'false'
+      run: node scripts/auto-changeset.mjs
 
-      - name: commit and push
-        if: steps.check-changesets.outputs.exists == 'false'
-        run: |
-          if git diff --cached --quiet; then
-            echo "No changeset was generated (no source changes or only docs/test/chore commits)"
-            exit 0
-          fi
+    - name: commit and push
+      if: steps.check-changesets.outputs.exists == 'false'
+      run: |
+        if git diff --cached --quiet; then
+          echo "No changeset was generated (no source changes or only docs/test/chore commits)"
+          exit 0
+        fi
 
-          git commit -m "chore: add auto-generated changeset"
-          git push
+        git commit -m "chore: add auto-generated changeset"
+        git push
 
-          echo "✓ Pushed auto-generated changeset to PR"
-
-      - name: comment on pr
-        if: steps.check-changesets.outputs.exists == 'false'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const { data: commits } = await github.rest.pulls.listCommits({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number
-            });
-
-            const hasChangesetCommit = commits.some(c =>
-              c.commit.message.includes('chore: add auto-generated changeset')
-            );
-
-            if (hasChangesetCommit) {
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: '✅ **Changeset auto-generated** from your conventional commits!\n\nThe changeset has been added to this PR. Review it in the `.changeset/` directory.'
-              });
-            }
+        echo "✓ Pushed auto-generated changeset to PR"
