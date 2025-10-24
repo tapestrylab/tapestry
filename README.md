@@ -5,17 +5,10 @@ Multi-package ecosystem for design system documentation, extraction, and develop
 ## Packages
 
 - **[@tapestrylab/extract](packages/extract)** - Core package for code data extraction
-- **[@tapestrylab/resolve](packages/resolve)** - Dependency and relationship resolver
-- **[@tapestrylab/graph](packages/graph)** - Shared data model and querying utilities
-- **[@tapestrylab/plugin-figma](packages/plugin-figma)** - Plugin for Figma integration
-- **[@tapestrylab/plugin-vscode](packages/plugin-vscode)** - Plugin for IDE integration
-- **[@tapestrylab/shared](packages/shared)** - Internal shared utilities
 
 ## Apps
 
-- **[studio](apps/studio)** - Main Studio app for authoring and docs
-- **[docs](apps/docs)** - Documentation site
-- **[playground](apps/playground)** - Demo or sandbox environment
+Coming soon
 
 ## Getting Started
 
