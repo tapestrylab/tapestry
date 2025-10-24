@@ -1,6 +1,7 @@
 {
   "name": "@tapestrylab/graph",
   "version": "0.0.0",
+  "private": "true",
   "description": "Shared data model and querying utilities",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -18,9 +19,11 @@
     "test": "echo \"Test script not yet implemented\"",
     "lint": "echo \"Lint script not yet implemented\""
   },
-  "keywords": ["tapestry", "graph", "data-model", "query"],
-  "license": "TBD",
-  "devDependencies": {
-    "typescript": "^5.4.2"
-  }
+  "keywords": [
+    "tapestry",
+    "graph",
+    "data-model",
+    "query"
+  ],
+  "license": "MIT"
 }
