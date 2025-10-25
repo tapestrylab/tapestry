@@ -65,7 +65,7 @@ function getCommitsSinceBase() {
   const mergeBase = exec(`git merge-base HEAD ${baseBranch}`);
   if (!mergeBase) return [];
 
-  const commits = exec(`git log ${mergeBase}..HEAD --format=%H|||%s`);
+  const commits = exec(`git log ${mergeBase}..HEAD --format="%H|||%s"`);
   if (!commits) return [];
 
   return commits.split('\n').map(line => {
