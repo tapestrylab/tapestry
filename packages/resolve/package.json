@@ -22,7 +22,8 @@
     "test": "vitest",
     "test:ci": "vitest run",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "demo": "tsx scripts/test-resolver.ts"
   },
   "dependencies": {
     "zod": "^4.1.12"

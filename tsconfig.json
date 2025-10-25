@@ -17,8 +17,19 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "incremental": true,
-    "composite": true
+    "incremental": true
   },
-  "exclude": ["node_modules", "dist", ".turbo", ".next", "dist"]
+  "exclude": [
+    "node_modules",
+    "**/node_modules",
+    "**/dist",
+    "**/test-fixtures",
+    "**/.turbo",
+    "**/.next",
+    "**/coverage",
+    "**/*.config.ts",
+    "**/*.config.js",
+    "**/*.config.mjs",
+    "scripts"
+  ]
 }
