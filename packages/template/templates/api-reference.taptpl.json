@@ -1,0 +1,84 @@
+{
+  "name": "API Reference",
+  "version": "1.0.0",
+  "description": "API-focused documentation template",
+  "outputFormat": "markdown",
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "{{name}}"
+    },
+    {
+      "type": "paragraph",
+      "text": "**File:** `{{filePath}}`"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Export:** {{exportType}}"
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Description"
+    },
+    {
+      "type": "paragraph",
+      "text": "{{description}}",
+      "if": "description"
+    },
+    {
+      "type": "paragraph",
+      "text": "No description available.",
+      "if": "!description"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Parameters",
+      "if": "props.length > 0"
+    },
+    {
+      "type": "propsTable",
+      "dataSource": "props",
+      "if": "props.length > 0"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Returns",
+      "if": "returns"
+    },
+    {
+      "type": "paragraph",
+      "text": "{{returns}}",
+      "if": "returns"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Examples",
+      "if": "examples.length > 0"
+    },
+    {
+      "type": "codeBlocks",
+      "dataSource": "examples",
+      "language": "tsx",
+      "if": "examples.length > 0"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Related",
+      "if": "links.length > 0"
+    },
+    {
+      "type": "linkList",
+      "dataSource": "links",
+      "if": "links.length > 0"
+    }
+  ]
+}

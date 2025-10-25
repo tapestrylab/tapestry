@@ -88,6 +88,25 @@ importers:
         specifier: ^19.2.2
         version: 19.2.2(@types/react@19.2.2)
 
+  packages/template:
+    dependencies:
+      '@tapestrylab/extract':
+        specifier: workspace:*
+        version: link:../extract
+      '@tapestrylab/resolve':
+        specifier: workspace:*
+        version: link:../resolve
+      react:
+        specifier: '>=18.0.0'
+        version: 19.2.0
+      zod:
+        specifier: ^4.1.12
+        version: 4.1.12
+    devDependencies:
+      '@types/react':
+        specifier: ^19.2.2
+        version: 19.2.2
+
 packages:
 
   '@babel/code-frame@7.27.1':

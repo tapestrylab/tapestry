@@ -1,0 +1,282 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Tapestry Template",
+  "description": "JSON schema for Tapestry documentation templates",
+  "type": "object",
+  "required": ["name", "blocks"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Template name"
+    },
+    "version": {
+      "type": "string",
+      "description": "Template version"
+    },
+    "description": {
+      "type": "string",
+      "description": "Template description"
+    },
+    "outputFormat": {
+      "type": "string",
+      "enum": ["markdown", "mdx", "html"],
+      "default": "markdown",
+      "description": "Output format"
+    },
+    "blocks": {
+      "type": "array",
+      "description": "Content blocks",
+      "items": {
+        "$ref": "#/definitions/Block"
+      }
+    }
+  },
+  "definitions": {
+    "Block": {
+      "oneOf": [
+        { "$ref": "#/definitions/HeadingBlock" },
+        { "$ref": "#/definitions/ParagraphBlock" },
+        { "$ref": "#/definitions/DividerBlock" },
+        { "$ref": "#/definitions/CodeBlock" },
+        { "$ref": "#/definitions/CodeBlocksBlock" },
+        { "$ref": "#/definitions/PropsTableBlock" },
+        { "$ref": "#/definitions/CalloutBlock" },
+        { "$ref": "#/definitions/TabsBlock" },
+        { "$ref": "#/definitions/AccordionBlock" },
+        { "$ref": "#/definitions/UsageSitesBlock" },
+        { "$ref": "#/definitions/DependencyListBlock" },
+        { "$ref": "#/definitions/DependentsBlock" },
+        { "$ref": "#/definitions/LinkListBlock" }
+      ]
+    },
+    "BaseBlock": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Block identifier"
+        },
+        "if": {
+          "type": "string",
+          "description": "Conditional expression"
+        }
+      }
+    },
+    "HeadingBlock": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseBlock" },
+        {
+          "type": "object",
+          "required": ["type", "level", "text"],
+          "properties": {
+            "type": { "const": "heading" },
+            "level": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 6
+            },
+            "text": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "ParagraphBlock": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseBlock" },
+        {
+          "type": "object",
+          "required": ["type", "text"],
+          "properties": {
+            "type": { "const": "paragraph" },
+            "text": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "DividerBlock": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseBlock" },
+        {
+          "type": "object",
+          "required": ["type"],
+          "properties": {
+            "type": { "const": "divider" }
+          }
+        }
+      ]
+    },
+    "CodeBlock": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseBlock" },
+        {
+          "type": "object",
+          "required": ["type", "code"],
+          "properties": {
+            "type": { "const": "code" },
+            "code": { "type": "string" },
+            "language": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "CodeBlocksBlock": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseBlock" },
+        {
+          "type": "object",
+          "required": ["type", "dataSource"],
+          "properties": {
+            "type": { "const": "codeBlocks" },
+            "dataSource": { "type": "string" },
+            "language": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "PropsTableBlock": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseBlock" },
+        {
+          "type": "object",
+          "required": ["type", "dataSource"],
+          "properties": {
+            "type": { "const": "propsTable" },
+            "dataSource": { "type": "string" },
+            "columns": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["field", "header"],
+                "properties": {
+                  "field": { "type": "string" },
+                  "header": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "CalloutBlock": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseBlock" },
+        {
+          "type": "object",
+          "required": ["type", "variant", "text"],
+          "properties": {
+            "type": { "const": "callout" },
+            "variant": {
+              "type": "string",
+              "enum": ["info", "warning", "error", "success"]
+            },
+            "text": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "TabsBlock": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseBlock" },
+        {
+          "type": "object",
+          "required": ["type", "tabs"],
+          "properties": {
+            "type": { "const": "tabs" },
+            "tabs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["label", "content"],
+                "properties": {
+                  "label": { "type": "string" },
+                  "content": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/Block" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "AccordionBlock": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseBlock" },
+        {
+          "type": "object",
+          "required": ["type", "items"],
+          "properties": {
+            "type": { "const": "accordion" },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["title", "content"],
+                "properties": {
+                  "title": { "type": "string" },
+                  "content": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/Block" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "UsageSitesBlock": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseBlock" },
+        {
+          "type": "object",
+          "required": ["type", "dataSource"],
+          "properties": {
+            "type": { "const": "usageSites" },
+            "dataSource": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "DependencyListBlock": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseBlock" },
+        {
+          "type": "object",
+          "required": ["type", "dataSource"],
+          "properties": {
+            "type": { "const": "dependencyList" },
+            "dataSource": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "DependentsBlock": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseBlock" },
+        {
+          "type": "object",
+          "required": ["type", "dataSource"],
+          "properties": {
+            "type": { "const": "dependents" },
+            "dataSource": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "LinkListBlock": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseBlock" },
+        {
+          "type": "object",
+          "required": ["type", "dataSource"],
+          "properties": {
+            "type": { "const": "linkList" },
+            "dataSource": { "type": "string" }
+          }
+        }
+      ]
+    }
+  }
+}

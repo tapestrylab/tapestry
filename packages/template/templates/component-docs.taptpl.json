@@ -1,0 +1,103 @@
+{
+  "name": "Component Documentation",
+  "version": "1.0.0",
+  "description": "Full component documentation template with props, examples, and metadata",
+  "outputFormat": "mdx",
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "{{name}}"
+    },
+    {
+      "type": "paragraph",
+      "text": "{{description}}",
+      "if": "description"
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "text": "⚠️ Deprecated: {{deprecated}}",
+      "if": "deprecated"
+    },
+    {
+      "type": "paragraph",
+      "text": "Available since version: {{since}}",
+      "if": "since"
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Props"
+    },
+    {
+      "type": "propsTable",
+      "dataSource": "props",
+      "if": "props.length > 0"
+    },
+    {
+      "type": "paragraph",
+      "text": "This component has no props.",
+      "if": "props.length === 0"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Examples",
+      "if": "examples.length > 0"
+    },
+    {
+      "type": "codeBlocks",
+      "dataSource": "examples",
+      "language": "tsx",
+      "if": "examples.length > 0"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Usage Sites",
+      "if": "usageSites.length > 0"
+    },
+    {
+      "type": "usageSites",
+      "dataSource": "usageSites",
+      "if": "usageSites.length > 0"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Dependencies",
+      "if": "dependencies.length > 0"
+    },
+    {
+      "type": "dependencyList",
+      "dataSource": "dependencies",
+      "if": "dependencies.length > 0"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Used By",
+      "if": "dependents.length > 0"
+    },
+    {
+      "type": "dependents",
+      "dataSource": "dependents",
+      "if": "dependents.length > 0"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "See Also",
+      "if": "links.length > 0"
+    },
+    {
+      "type": "linkList",
+      "dataSource": "links",
+      "if": "links.length > 0"
+    }
+  ]
+}
