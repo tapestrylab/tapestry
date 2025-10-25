@@ -26,7 +26,7 @@ const BUMP_TYPES = {
   build: 'patch',
 };
 
-const NO_CHANGESET_TYPES = new Set(['docs', 'test', 'chore', 'style', 'ci']);
+const NO_CHANGESET_TYPES = new Set(['docs', 'test', 'chore', 'style', 'ci', 'repo']);
 
 function exec(command, options = {}) {
   try {
