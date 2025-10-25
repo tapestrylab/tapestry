@@ -5,10 +5,9 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import type { ExtractConfig } from '@tapestrylab/extract';
+import { resolveComponent, resolveComponents } from '@tapestrylab/resolve';
 import type { Template, RenderContext, RenderResult, TemplateDataContext } from './types';
 import type { TapestryTheme, ResolvedTheme } from './types-theme';
-import { extractComponents } from './extract-wrapper';
-import { resolveRelationshipsForAll } from './resolve-wrapper';
 import { matchTemplate, type TemplateMatchRule } from './matcher';
 import { loadTheme, resolveTheme } from './theme-resolver';
 import { renderMarkdown } from './renderer-markdown';
@@ -58,27 +57,18 @@ export async function generate(config: GenerateConfig): Promise<RenderResult> {
   if (config.data) {
     componentData = config.data;
   } else if (config.source) {
-    // Extract from source (defaults handle include/exclude automatically)
-    const components = await extractComponents(
-      config.extractConfig || {
-        root: config.source,
-      }
-    );
+    // Use resolve API to extract and optionally enrich
+    const component = await resolveComponent(config.source, {
+      includeRelationships: config.includeRelationships,
+      projectRoot: config.projectRoot,
+      extractConfig: config.extractConfig,
+    });
 
-    if (components.length === 0) {
-      throw new Error(`No components found in ${config.source}`);
+    if (!component) {
+      throw new Error(`No component found in ${config.source}`);
     }
 
-    componentData = components[0] as TemplateDataContext;
-
-    // Optionally resolve relationships
-    if (config.includeRelationships && config.projectRoot) {
-      const enriched = await resolveRelationshipsForAll(
-        [componentData],
-        config.projectRoot
-      );
-      componentData = enriched[0];
-    }
+    componentData = component as TemplateDataContext;
   } else {
     throw new Error('Either data or source must be provided');
   }
@@ -144,12 +134,13 @@ export async function generate(config: GenerateConfig): Promise<RenderResult> {
 export async function generateAll(
   config: GenerateAllConfig
 ): Promise<Map<string, RenderResult>> {
-  // Step 1: Extract all components (defaults handle patterns automatically)
-  const components = await extractComponents(
-    config.extractConfig || {
-      root: config.source,
-    }
-  );
+  // Step 1: Extract all components with optional relationship resolution
+  const components = await resolveComponents({
+    root: config.source,
+    includeRelationships: config.includeRelationships,
+    projectRoot: config.projectRoot || config.source,
+    extractConfig: config.extractConfig,
+  });
 
   if (components.length === 0) {
     throw new Error(`No components found in ${config.source}`);
@@ -157,16 +148,7 @@ export async function generateAll(
 
   console.log(`Found ${components.length} component(s)`);
 
-  // Step 2: Optionally resolve relationships
-  let enrichedComponents: TemplateDataContext[] = components as TemplateDataContext[];
-
-  if (config.includeRelationships) {
-    console.log('Resolving relationships...');
-    enrichedComponents = await resolveRelationshipsForAll(
-      components,
-      config.projectRoot || config.source
-    );
-  }
+  const enrichedComponents: TemplateDataContext[] = components as TemplateDataContext[];
 
   // Step 3: Load template(s) and theme
   const outputFormat = config.outputFormat || 'markdown';
@@ -234,11 +216,12 @@ export async function extractAndResolve(
   extractConfig: ExtractConfig,
   projectRoot?: string
 ): Promise<TemplateDataContext[]> {
-  const components = await extractComponents(extractConfig);
-  return resolveRelationshipsForAll(
-    components,
-    projectRoot || extractConfig.root || process.cwd()
-  );
+  return resolveComponents({
+    root: extractConfig.root || process.cwd(),
+    includeRelationships: true,
+    projectRoot: projectRoot || extractConfig.root || process.cwd(),
+    extractConfig,
+  }) as Promise<TemplateDataContext[]>;
 }
 
 /**

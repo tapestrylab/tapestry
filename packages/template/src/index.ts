@@ -80,10 +80,6 @@ export {
 } from './generator';
 export type { GenerateConfig, GenerateAllConfig } from './generator';
 
-// Extract & Resolve Wrappers
-export { extractComponents, extractComponent } from './extract-wrapper';
-export { resolveRelationships, resolveRelationshipsForAll } from './resolve-wrapper';
-
 // Interpolation utilities
 export {
   interpolate,
@@ -92,5 +88,11 @@ export {
   shouldRenderBlock,
 } from './interpolate';
 
-// Re-export from @tapestrylab/extract for convenience
+// Re-export from @tapestrylab/extract and @tapestrylab/resolve for convenience
 export { extract } from '@tapestrylab/extract';
+export {
+  resolveComponent,
+  resolveComponents,
+  extractComponent,
+  extractComponents,
+} from '@tapestrylab/resolve';

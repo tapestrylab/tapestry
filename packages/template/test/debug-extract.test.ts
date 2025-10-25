@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { extractComponents } from '../src/extract-wrapper';
+import { extractComponents } from '@tapestrylab/resolve';
 import path from 'node:path';
 
 describe('Debug Extract', () => {

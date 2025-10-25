@@ -12,55 +12,20 @@ export type {
   ExtractConfig,
 } from '@tapestrylab/extract';
 
-/**
- * Extended component data with relationship information from @tapestrylab/resolve
- */
-export interface UsageSite {
-  file: string;
-  line: number;
-  column: number;
-  context?: string;
-}
+// Import and re-export enrichment types from @tapestrylab/resolve
+import type {
+  EnrichedComponentData,
+  UsageSite,
+  Dependency,
+  Dependent,
+} from '@tapestrylab/resolve';
 
-export interface Dependency {
-  name: string;
-  version?: string;
-  type: 'npm' | 'local';
-  path?: string;
-}
-
-export interface Dependent {
-  name: string;
-  filePath: string;
-}
-
-export interface EnrichedComponentData {
-  // All fields from ComponentMetadata
-  type: 'component';
-  name: string;
-  filePath: string;
-  exportType: 'default' | 'named';
-  props: Array<{
-    name: string;
-    type: string;
-    required: boolean;
-    defaultValue?: string;
-    description?: string;
-    examples?: string[];
-  }>;
-  description?: string;
-  deprecated?: string | boolean;
-  returns?: string;
-  links?: string[];
-  since?: string;
-  examples?: string[];
-  extends?: string[];
-
-  // Additional fields from @tapestrylab/resolve
-  usageSites?: UsageSite[];
-  dependencies?: Dependency[];
-  dependents?: Dependent[];
-}
+export type {
+  EnrichedComponentData,
+  UsageSite,
+  Dependency,
+  Dependent,
+};
 
 /**
  * Template data context - ComponentMetadata is the root data context

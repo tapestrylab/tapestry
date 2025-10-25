@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { generate } from '../src/generator';
 import { createTemplate } from '../src/template-builder';
-import { extractComponents } from '../src/extract-wrapper';
+import { extractComponents } from '@tapestrylab/resolve';
 import path from 'node:path';
 
 describe('Integration Tests', () => {
