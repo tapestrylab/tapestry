@@ -58,13 +58,10 @@ export async function generate(config: GenerateConfig): Promise<RenderResult> {
   if (config.data) {
     componentData = config.data;
   } else if (config.source) {
-    // Extract from source
+    // Extract from source (defaults handle include/exclude automatically)
     const components = await extractComponents(
       config.extractConfig || {
         root: config.source,
-        include: ['**/*.tsx', '**/*.ts', '**/*.jsx', '**/*.js'],
-        exclude: ['node_modules', 'dist', '**/*.test.*', '**/*.spec.*'],
-        output: '',
       }
     );
 
@@ -147,13 +144,10 @@ export async function generate(config: GenerateConfig): Promise<RenderResult> {
 export async function generateAll(
   config: GenerateAllConfig
 ): Promise<Map<string, RenderResult>> {
-  // Step 1: Extract all components
+  // Step 1: Extract all components (defaults handle patterns automatically)
   const components = await extractComponents(
     config.extractConfig || {
       root: config.source,
-      include: ['**/*.tsx', '**/*.ts', '**/*.jsx', '**/*.js'],
-      exclude: ['node_modules', 'dist', '**/*.test.*', '**/*.spec.*'],
-      output: '',
     }
   );
 

@@ -2,7 +2,10 @@
  * Wrapper around @tapestrylab/extract for component metadata extraction
  */
 
-import { extract } from '@tapestrylab/extract';
+import {
+  extract,
+  extractComponent as extractSingleComponent,
+} from '@tapestrylab/extract';
 import type { ExtractConfig, ComponentMetadata } from '@tapestrylab/extract';
 
 /**
@@ -10,9 +13,20 @@ import type { ExtractConfig, ComponentMetadata } from '@tapestrylab/extract';
  *
  * This is a convenience wrapper around @tapestrylab/extract that
  * returns ComponentMetadata[] directly for template usage.
+ *
+ * @example
+ * // Simple usage with defaults
+ * const components = await extractComponents({ root: './src' });
+ *
+ * @example
+ * // With custom options
+ * const components = await extractComponents({
+ *   root: './src',
+ *   include: ['**\/*.tsx']
+ * });
  */
 export async function extractComponents(
-  config: ExtractConfig
+  config: Partial<ExtractConfig>
 ): Promise<ComponentMetadata[]> {
   try {
     const result = await extract(config);
@@ -36,16 +50,12 @@ export async function extractComponents(
 
 /**
  * Extract a single component from a file
+ *
+ * @example
+ * const component = await extractComponent('./src/components/Button.tsx');
  */
 export async function extractComponent(
   filePath: string
 ): Promise<ComponentMetadata | null> {
-  const components = await extractComponents({
-    root: filePath,
-    include: [filePath],
-    exclude: [],
-    output: '',
-  });
-
-  return components.length > 0 ? components[0] : null;
+  return extractSingleComponent(filePath);
 }

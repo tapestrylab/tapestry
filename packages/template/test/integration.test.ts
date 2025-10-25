@@ -6,12 +6,10 @@ import path from 'node:path';
 
 describe('Integration Tests', () => {
   it('should extract and generate markdown documentation', async () => {
-    // Step 1: Extract component
+    // Step 1: Extract component (simpler API with defaults)
     const components = await extractComponents({
       root: path.resolve(__dirname, '../test-fixtures'),
       include: ['Button.tsx'],
-      exclude: [],
-      output: '',
     });
 
     expect(components).toHaveLength(1);
@@ -45,8 +43,6 @@ describe('Integration Tests', () => {
     const components = await extractComponents({
       root: path.resolve(__dirname, '../test-fixtures'),
       include: ['Button.tsx'],
-      exclude: [],
-      output: '',
     });
 
     const template = createTemplate('Variable Test')
@@ -69,8 +65,6 @@ describe('Integration Tests', () => {
     const components = await extractComponents({
       root: path.resolve(__dirname, '../test-fixtures'),
       include: ['Button.tsx'],
-      exclude: [],
-      output: '',
     });
 
     const template = createTemplate('Conditional Test')

@@ -7,8 +7,6 @@ describe('Debug Extract', () => {
     const components = await extractComponents({
       root: path.resolve(__dirname, '../test-fixtures'),
       include: ['Button.tsx'],
-      exclude: [],
-      output: '',
     });
 
     console.log('Extracted components:', JSON.stringify(components, null, 2));
