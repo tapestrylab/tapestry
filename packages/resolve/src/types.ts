@@ -1,4 +1,46 @@
 import { z } from "zod";
+import type { ComponentMetadata } from "@tapestrylab/extract";
+
+// Component Enrichment Types (formerly in @tapestrylab/template)
+
+/**
+ * Usage site information for a component
+ */
+export interface UsageSite {
+  file: string;
+  line: number;
+  column: number;
+  context?: string;
+}
+
+/**
+ * Dependency information
+ */
+export interface Dependency {
+  name: string;
+  version?: string;
+  type: 'npm' | 'local';
+  path?: string;
+}
+
+/**
+ * Dependent component information
+ */
+export interface Dependent {
+  name: string;
+  filePath: string;
+}
+
+/**
+ * Enriched component data with relationship information
+ */
+export interface EnrichedComponentData extends ComponentMetadata {
+  usageSites?: UsageSite[];
+  dependencies?: Dependency[];
+  dependents?: Dependent[];
+}
+
+// Module Resolution Types
 
 /**
  * Source of the resolved entry

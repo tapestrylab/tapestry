@@ -58,9 +58,9 @@ export interface ComponentDoc {
 }
 
 /**
- * Options for resolving component documentation
+ * Options for resolving component documentation (SSR/Sandbox)
  */
-export interface ResolveOptions {
+export interface ComponentDocResolveOptions {
   /** Path to the component entry file */
   entry: string;
   /** Whether to render SSR preview HTML */
@@ -109,7 +109,7 @@ export const ComponentDocSchema = z.object({
   sandbox: SandboxConfigSchema.optional(),
 });
 
-export const ResolveOptionsSchema = z.object({
+export const ComponentDocResolveOptionsSchema = z.object({
   entry: z.string(),
   renderPreview: z.boolean().optional(),
   sandbox: z.boolean().optional(),
