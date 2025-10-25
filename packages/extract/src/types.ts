@@ -1,11 +1,28 @@
 import { z } from "zod";
 
-// Configuration schema
+// Default configuration values
+export const DEFAULT_INCLUDE = [
+  '**/*.tsx',
+  '**/*.ts',
+  '**/*.jsx',
+  '**/*.js',
+];
+
+export const DEFAULT_EXCLUDE = [
+  'node_modules/**',
+  'dist/**',
+  'build/**',
+  '**/*.test.*',
+  '**/*.spec.*',
+  '**/*.d.ts',
+];
+
+// Configuration schema with optional fields and smart defaults
 export const ExtractConfigSchema = z.object({
   root: z.string().default(process.cwd()),
-  include: z.array(z.string()),
-  exclude: z.array(z.string()),
-  output: z.string(),
+  include: z.array(z.string()).default(DEFAULT_INCLUDE),
+  exclude: z.array(z.string()).default(DEFAULT_EXCLUDE),
+  output: z.string().optional(),
   plugins: z.array(z.string()).optional(),
   extractors: z.record(z.string(), z.any()).optional(),
 });
