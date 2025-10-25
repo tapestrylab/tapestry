@@ -14,12 +14,19 @@ Perfect for:
 
 ## Features
 
+### Module Resolution
 - **Multiple Resolution Strategies**: Local filesystem, CDN (esm.sh, jsDelivr, unpkg), and remote registries
 - **Alias Support**: Map short names (e.g., `@ui/Button`) to actual paths
 - **Browser & Node Compatible**: Works in both environments
 - **Caching**: Built-in caching for fast repeated resolutions
-- **TypeScript**: Fully typed with extensive type definitions
 - **Extensible**: Easy to add custom resolution strategies
+
+### Component Documentation
+- **Server-Side Rendering**: Pre-render component previews at build time
+- **Metadata Extraction**: Integration with `@tapestrylab/extract` for props, types, and JSDoc
+- **Interactive Sandboxes**: Optional sandbox configuration generation for live examples
+- **Static Site Compatible**: Zero-config deployable documentation
+- **TypeScript**: Fully typed with extensive type definitions
 
 ## Installation
 
@@ -63,11 +70,56 @@ console.log(react)
 // { id: 'react', path: 'https://esm.sh/react@18.3.1', source: 'cdn' }
 ```
 
+### Component Documentation with SSR
+
+```typescript
+import { createComponentResolver, strategies } from '@tapestrylab/resolve';
+
+const docResolver = createComponentResolver({
+  strategies: [
+    strategies.local({
+      root: '/src',
+      alias: { '@ui': 'components/ui' }
+    })
+  ]
+});
+
+// Resolve component documentation with SSR preview and sandbox config
+const docs = await docResolver.resolve({
+  entry: '/src/components/Button.tsx',
+  renderPreview: true,  // Generate SSR HTML preview
+  sandbox: true          // Generate sandbox configuration
+});
+
+console.log(docs);
+// {
+//   name: "Button",
+//   description: "A customizable button component",
+//   filePath: "/src/components/Button.tsx",
+//   props: [
+//     {
+//       name: "variant",
+//       type: "'primary' | 'secondary'",
+//       required: false,
+//       defaultValue: "'primary'"
+//     }
+//   ],
+//   previewHtml: "<div class=\"tapestry-preview\">...</div>",
+//   sandbox: {
+//     code: "...",
+//     dependencies: { "react": "latest" },
+//     files: { "Button.tsx": "...", "App.tsx": "..." }
+//   }
+// }
+```
+
 ## API
 
-### `createResolver(config)`
+### Module Resolution
 
-Create a new resolver instance.
+#### `createResolver(config)`
+
+Create a new module resolver instance.
 
 ```typescript
 const resolver = createResolver({
@@ -82,7 +134,7 @@ const resolver = createResolver({
 })
 ```
 
-### `resolver.resolve(id, context?)`
+#### `resolver.resolve(id, context?)`
 
 Resolve a single module identifier.
 
@@ -119,6 +171,64 @@ Add a new strategy dynamically.
 ```typescript
 resolver.addStrategy(strategies.remote(), false) // Add to end
 resolver.addStrategy(strategies.local(), true) // Add to beginning
+```
+
+### Component Documentation
+
+#### `createComponentResolver(config, options?)`
+
+Create a component documentation resolver.
+
+```typescript
+const docResolver = createComponentResolver(
+  {
+    strategies: [strategies.local({ root: '/src' })]
+  },
+  {
+    renderFunction: (component, props) => {
+      // Custom SSR rendering logic
+      return customRender(component, props);
+    }
+  }
+);
+```
+
+#### `docResolver.resolve(options)`
+
+Resolve component documentation with optional SSR preview and sandbox config.
+
+```typescript
+const docs = await docResolver.resolve({
+  entry: '/src/components/Button.tsx',
+  renderPreview: true,     // Generate SSR HTML preview
+  sandbox: true,            // Generate sandbox configuration
+  previewProps: {           // Props to pass during preview render
+    variant: 'primary'
+  }
+});
+
+// Returns: ComponentDoc
+// {
+//   name: string;
+//   description?: string;
+//   filePath: string;
+//   props?: PropDoc[];
+//   examples?: ExampleDoc[];
+//   imports?: string[];
+//   previewHtml?: string;
+//   sandbox?: SandboxConfig;
+// }
+```
+
+#### `docResolver.resolveMany(entries, options?)`
+
+Resolve multiple components in parallel.
+
+```typescript
+const allDocs = await docResolver.resolveMany(
+  ['/src/components/Button.tsx', '/src/components/Input.tsx'],
+  { renderPreview: true, sandbox: true }
+);
 ```
 
 ## Strategies

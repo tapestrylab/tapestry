@@ -26,9 +26,25 @@
     "demo": "tsx scripts/test-resolver.ts"
   },
   "dependencies": {
+    "@tapestrylab/extract": "workspace:*",
     "zod": "^4.1.12"
   },
-  "devDependencies": {},
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2"
+  },
   "engines": {
     "node": ">=22.0.0"
   },
