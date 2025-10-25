@@ -25,9 +25,13 @@ export const ExtractConfigSchema = z.object({
   output: z.string().optional(),
   plugins: z.array(z.string()).optional(),
   extractors: z.record(z.string(), z.any()).optional(),
+  errorHandling: z.enum(['collect', 'throw', 'ignore']).default('collect'),
+  cache: z.boolean().default(false),
 });
 
 export type ExtractConfig = z.infer<typeof ExtractConfigSchema>;
+
+export type ErrorCallback = (error: ExtractError) => void;
 
 // Extracted metadata types
 export interface ComponentMetadata {
@@ -78,9 +82,25 @@ export interface ExtractError {
   column?: number;
 }
 
-// Plugin system types
+// Plugin system types with lifecycle hooks
 export interface ExtractorPlugin {
   name: string;
-  test: (filePath: string) => boolean;
-  extract: (filePath: string, content: string) => Promise<ExtractedMetadata[]>;
+
+  // Core extraction
+  test?: (filePath: string) => boolean;
+  extract?: (filePath: string, content: string) => Promise<ExtractedMetadata[]>;
+
+  // Lifecycle hooks
+  beforeScan?: (config: ExtractConfig) => void | Promise<void>;
+  afterScan?: (files: string[]) => string[] | Promise<string[]>;
+  afterExtract?: (metadata: ExtractedMetadata) => ExtractedMetadata | Promise<ExtractedMetadata>;
+  afterAll?: (metadata: ExtractedMetadata[], config: ExtractConfig) => ExtractedMetadata[] | Promise<ExtractedMetadata[]>;
+}
+
+// Custom error class for extraction failures
+export class ExtractionError extends Error {
+  constructor(message: string, public errors: ExtractError[]) {
+    super(message);
+    this.name = 'ExtractionError';
+  }
 }

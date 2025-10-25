@@ -1,10 +1,15 @@
 import { loadConfig, normalizeExtractConfig } from "./config";
 import { extract as extractor } from "./extractor";
-import { ExtractConfig, ComponentMetadata } from "./types";
+import { scanFiles, readFile } from "./scanner";
+import { ExtractConfig, ComponentMetadata, ExtractorPlugin, ExtractedMetadata } from "./types";
 import path from "node:path";
+import { createReactExtractor } from "./extractors/react/index.js";
 
 export { loadConfig, normalizeExtractConfig } from "./config";
 export * from "./types";
+export { ExtractionCache } from "./cache";
+export { watch } from "./watcher";
+export type { WatchOptions, Watcher } from "./watcher";
 
 /**
  * Extract components from source files
@@ -24,6 +29,54 @@ export * from "./types";
 export async function extract(config?: Partial<ExtractConfig>) {
   const fullConfig = await loadConfig(undefined, config);
   return extractor(fullConfig);
+}
+
+/**
+ * Extract and return only metadata (convenience function)
+ *
+ * @example
+ * const components = await extractMetadata({ root: './src' });
+ */
+export async function extractMetadata(
+  config?: Partial<ExtractConfig>
+): Promise<ComponentMetadata[]> {
+  const result = await extract(config);
+  return result.metadata as ComponentMetadata[];
+}
+
+/**
+ * Extract components as a stream for large codebases
+ *
+ * @example
+ * for await (const component of extractStream({ root: './src' })) {
+ *   console.log('Found:', component.name);
+ * }
+ */
+export async function* extractStream(
+  config?: Partial<ExtractConfig>
+): AsyncGenerator<ExtractedMetadata, void, undefined> {
+  const fullConfig = await loadConfig(undefined, config);
+  const files = await scanFiles(fullConfig);
+  const extractors: ExtractorPlugin[] = [createReactExtractor()];
+
+  for (const filePath of files) {
+    try {
+      const content = await readFile(filePath);
+      const extractor = extractors.find((e) => e.test && e.test(filePath));
+
+      if (extractor && extractor.extract) {
+        const metadata = await extractor.extract(filePath, content);
+        for (const item of metadata) {
+          yield item;
+        }
+      }
+    } catch (error) {
+      if (fullConfig.errorHandling === 'throw') {
+        throw error;
+      }
+      // Ignore or collect errors based on config
+    }
+  }
 }
 
 /**

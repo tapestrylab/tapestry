@@ -4,9 +4,11 @@ import {
   ExtractedMetadata,
   ExtractError,
   ExtractorPlugin,
+  ExtractionError,
 } from "./types.js";
 import { scanFiles, readFile, getRelativePath } from "./scanner.js";
 import { createReactExtractor } from "./extractors/react/index.js";
+import { ExtractionCache } from "./cache.js";
 
 // Default built-in extractors
 const DEFAULT_EXTRACTORS = [createReactExtractor()];
@@ -19,9 +21,9 @@ async function extractFile(
   content: string,
   extractors: ExtractorPlugin[]
 ): Promise<ExtractedMetadata[]> {
-  const extractor = extractors.find((e) => e.test(filePath));
+  const extractor = extractors.find((e) => e.test && e.test(filePath));
 
-  if (!extractor) {
+  if (!extractor || !extractor.extract) {
     return [];
   }
 
@@ -29,36 +31,97 @@ async function extractFile(
 }
 
 /**
- * Main extraction function
+ * Main extraction function with lifecycle hooks and error handling
  */
 export async function extract(
   config: ExtractConfig,
   customExtractors: ExtractorPlugin[] = []
 ): Promise<ExtractResult> {
   const startTime = Date.now();
-  const metadata: ExtractedMetadata[] = [];
+  let metadata: ExtractedMetadata[] = [];
   const errors: ExtractError[] = [];
 
   // Merge custom extractors with defaults (custom take precedence)
   const extractors = [...customExtractors, ...DEFAULT_EXTRACTORS];
 
+  // Initialize cache if enabled
+  const cache = config.cache ? new ExtractionCache() : null;
+
+  // Run beforeScan hooks
+  for (const extractor of extractors) {
+    if (extractor.beforeScan) {
+      await extractor.beforeScan(config);
+    }
+  }
+
   // Scan files
-  const files = await scanFiles(config);
+  let files = await scanFiles(config);
+
+  // Run afterScan hooks (can filter/modify file list)
+  for (const extractor of extractors) {
+    if (extractor.afterScan) {
+      files = await extractor.afterScan(files);
+    }
+  }
+
   let filesProcessed = 0;
 
   // Process each file
   for (const filePath of files) {
     try {
+      // Check cache first
+      const cached = await cache?.get(filePath);
+      if (cached) {
+        metadata.push(...cached);
+        filesProcessed++;
+        continue;
+      }
+
+      // Extract
       const content = await readFile(filePath);
-      const extracted = await extractFile(filePath, content, extractors);
+      let extracted = await extractFile(filePath, content, extractors);
+
+      // Run afterExtract hooks on each extracted item
+      for (const extractor of extractors) {
+        if (extractor.afterExtract) {
+          extracted = await Promise.all(
+            extracted.map((item) => extractor.afterExtract!(item))
+          );
+        }
+      }
+
+      // Cache the results
+      if (cache) {
+        await cache.set(filePath, extracted);
+      }
+
       metadata.push(...extracted);
       filesProcessed++;
     } catch (error) {
-      errors.push({
+      const extractError: ExtractError = {
         filePath: getRelativePath(filePath, config.root),
         message: error instanceof Error ? error.message : String(error),
-      });
+      };
+
+      if (config.errorHandling === 'throw') {
+        throw new ExtractionError('Extraction failed', [extractError]);
+      } else if (config.errorHandling === 'collect') {
+        errors.push(extractError);
+      }
+      // 'ignore' = do nothing
     }
+  }
+
+  // Run afterAll hooks
+  for (const extractor of extractors) {
+    if (extractor.afterAll) {
+      metadata = await extractor.afterAll(metadata, config);
+    }
+  }
+
+  // If we have errors and errorHandling is throw, throw now
+  if (config.errorHandling === 'throw' && errors.length > 0) {
+    throw new ExtractionError('Extraction completed with errors', errors);
   }
 
   // Calculate stats
