@@ -20,7 +20,31 @@ export type {
   ResolvedEntry,
   ResolvedSource,
   ResolutionContext,
+  // Component enrichment types
+  EnrichedComponentData,
+  UsageSite,
+  Dependency,
+  Dependent,
 } from "./types.js";
+
+// Component extraction and resolution exports
+export { extractComponent, extractComponents } from "./component-extractor.js";
+export {
+  resolveComponent,
+  resolveComponents,
+  type ResolveOptions,
+} from "./component-resolve-api.js";
+export {
+  resolveRelationships,
+  resolveRelationshipsForAll,
+  findUsageSites,
+  findDependencies,
+  findDependents,
+} from "./relationship-resolver.js";
+export {
+  createResolvePlugin,
+  type ResolvePluginConfig,
+} from "./extract-plugin.js";
 
 // Component documentation exports
 export { createComponentDocResolver } from "./component-doc-resolver.js";
@@ -45,7 +69,7 @@ export type {
   PropDoc,
   ExampleDoc,
   SandboxConfig,
-  ResolveOptions,
+  ComponentDocResolveOptions,
 } from "./component-types.js";
 
 // Strategy exports
