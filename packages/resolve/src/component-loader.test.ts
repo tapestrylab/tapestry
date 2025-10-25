@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { ComponentLoader } from "./ComponentLoader.js";
-import { Resolver } from "./Resolver.js";
+import { createComponentLoader, type ComponentLoader } from "./component-loader.js";
+import { createResolver } from "./resolver.js";
 import { local } from "./strategies/local.js";
 import { writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 
 const TEST_DIR = join(process.cwd(), "test-component-loader");
 
-describe("ComponentLoader", () => {
+describe("createComponentLoader", () => {
   let loader: ComponentLoader;
 
   beforeEach(() => {
@@ -19,7 +19,7 @@ describe("ComponentLoader", () => {
     mkdirSync(TEST_DIR, { recursive: true });
 
     // Create a resolver with local strategy
-    const resolver = new Resolver({
+    const resolver = createResolver({
       strategies: [
         local({
           root: TEST_DIR,
@@ -30,7 +30,7 @@ describe("ComponentLoader", () => {
       ],
     });
 
-    loader = new ComponentLoader(resolver);
+    loader = createComponentLoader(resolver);
   });
 
   it("should load a component file and extract source", async () => {

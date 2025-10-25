@@ -5,7 +5,7 @@ import {
   normalizePath,
   isRelativePath,
   isAbsolutePath,
-} from "../utils/normalizePath.js";
+} from "../utils/normalize-path.js";
 
 export interface LocalStrategyConfig {
   /** Root directory for resolution */

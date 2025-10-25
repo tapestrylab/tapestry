@@ -1,5 +1,5 @@
 import type { ResolverStrategy } from "../types.js";
-import { isBareModuleSpecifier } from "../utils/normalizePath.js";
+import { isBareModuleSpecifier } from "../utils/normalize-path.js";
 
 export type CDNProvider = "esm.sh" | "jsdelivr" | "unpkg";
 

@@ -6,20 +6,25 @@ import type {
 } from "./types.js";
 
 /**
- * Core Resolver class that orchestrates multiple resolution strategies
+ * Resolver interface returned by createResolver
  */
-export class Resolver {
-  private strategies: ResolverStrategy[];
-  private cache: Map<string, ResolvedEntry | null>;
-  private cacheEnabled: boolean;
-  private context: ResolutionContext;
+export interface Resolver {
+  resolve(id: string, context?: ResolutionContext): Promise<ResolvedEntry | null>;
+  resolveMany(ids: string[], context?: ResolutionContext): Promise<Map<string, ResolvedEntry | null>>;
+  clearCache(): void;
+  getCacheSize(): number;
+  addStrategy(strategy: ResolverStrategy, prepend?: boolean): void;
+  getStrategies(): ResolverStrategy[];
+}
 
-  constructor(config: ResolverConfig = {}) {
-    this.strategies = config.strategies ?? [];
-    this.cacheEnabled = config.cache ?? true;
-    this.cache = new Map();
-    this.context = config.context ?? {};
-  }
+/**
+ * Core resolver factory that orchestrates multiple resolution strategies
+ */
+export function createResolver(config: ResolverConfig = {}): Resolver {
+  const strategies: ResolverStrategy[] = config.strategies ?? [];
+  const cacheEnabled = config.cache ?? true;
+  const cacheMap = new Map<string, ResolvedEntry | null>();
+  const defaultContext = config.context ?? {};
 
   /**
    * Resolve a module identifier using the configured strategies
@@ -27,26 +32,26 @@ export class Resolver {
    * @param context - Optional resolution context to override default
    * @returns Resolved entry or null if unable to resolve
    */
-  async resolve(
+  async function resolve(
     id: string,
     context?: ResolutionContext
   ): Promise<ResolvedEntry | null> {
     // Merge contexts
-    const mergedContext = { ...this.context, ...context };
+    const mergedContext = { ...defaultContext, ...context };
 
     // Check cache
-    if (this.cacheEnabled && this.cache.has(id)) {
-      return this.cache.get(id) ?? null;
+    if (cacheEnabled && cacheMap.has(id)) {
+      return cacheMap.get(id) ?? null;
     }
 
     // Try each strategy in order
-    for (const strategy of this.strategies) {
+    for (const strategy of strategies) {
       try {
         const result = await strategy.resolve(id, mergedContext);
         if (result) {
           // Cache successful resolution
-          if (this.cacheEnabled) {
-            this.cache.set(id, result);
+          if (cacheEnabled) {
+            cacheMap.set(id, result);
           }
           return result;
         }
@@ -60,8 +65,8 @@ export class Resolver {
     }
 
     // Cache failed resolution
-    if (this.cacheEnabled) {
-      this.cache.set(id, null);
+    if (cacheEnabled) {
+      cacheMap.set(id, null);
     }
 
     return null;
@@ -73,13 +78,13 @@ export class Resolver {
    * @param context - Optional resolution context
    * @returns Map of identifier to resolved entry
    */
-  async resolveMany(
+  async function resolveMany(
     ids: string[],
     context?: ResolutionContext
   ): Promise<Map<string, ResolvedEntry | null>> {
     const results = await Promise.all(
       ids.map(async (id) => {
-        const resolved = await this.resolve(id, context);
+        const resolved = await resolve(id, context);
         return [id, resolved] as const;
       })
     );
@@ -89,15 +94,15 @@ export class Resolver {
   /**
    * Clear the resolution cache
    */
-  clearCache(): void {
-    this.cache.clear();
+  function clearCache(): void {
+    cacheMap.clear();
   }
 
   /**
    * Get the number of cached entries
    */
-  getCacheSize(): number {
-    return this.cache.size;
+  function getCacheSize(): number {
+    return cacheMap.size;
   }
 
   /**
@@ -105,18 +110,27 @@ export class Resolver {
    * @param strategy - The strategy to add
    * @param prepend - If true, add to the beginning of the strategy list
    */
-  addStrategy(strategy: ResolverStrategy, prepend = false): void {
+  function addStrategy(strategy: ResolverStrategy, prepend = false): void {
     if (prepend) {
-      this.strategies.unshift(strategy);
+      strategies.unshift(strategy);
     } else {
-      this.strategies.push(strategy);
+      strategies.push(strategy);
     }
   }
 
   /**
    * Get all registered strategies
    */
-  getStrategies(): ResolverStrategy[] {
-    return [...this.strategies];
+  function getStrategies(): ResolverStrategy[] {
+    return [...strategies];
   }
+
+  return {
+    resolve,
+    resolveMany,
+    clearCache,
+    getCacheSize,
+    addStrategy,
+    getStrategies,
+  };
 }

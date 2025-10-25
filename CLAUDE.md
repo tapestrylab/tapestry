@@ -31,9 +31,11 @@ tapestry/
 ```
 
 **Active Packages:**
+
 - `@tapestrylab/extract` - Fully implemented component metadata extractor (see `packages/extract/CLAUDE.md`)
 
 **Stub Packages:**
+
 - All other packages/apps have placeholder package.json files with unimplemented scripts
 
 ## Development Commands
@@ -61,6 +63,7 @@ turbo run build --filter=@tapestrylab/extract  # Alternative Turbo syntax
 ```
 
 **Turbo Build Details:**
+
 - Builds run in topological order (dependencies build first via `^build`)
 - Build outputs cached in `.turbo/` and `dist/` directories
 - Next.js apps output to `.next/` (excluded from cache)
@@ -74,6 +77,7 @@ pnpm --filter @tapestrylab/extract test     # Test specific package
 ```
 
 **Testing Notes:**
+
 - Most packages use Vitest for unit tests
 - Test files colocated with source using `.test.ts` extension
 - Coverage outputs to `coverage/` directories
@@ -108,6 +112,7 @@ This monorepo uses **Changesets** for independent package versioning with **auto
 **Changesets are automatically generated** from your commit messages when you create a PR. You don't need to run `pnpm changeset` manually!
 
 The GitHub Action (`.github/workflows/auto-changeset.yml`) will:
+
 1. Detect which packages have source changes
 2. Parse your conventional commit messages
 3. Infer the bump type (major/minor/patch)
@@ -128,6 +133,7 @@ docs: update README                                # → no changeset
 ```
 
 **Key types:**
+
 - `feat:` → minor (new features)
 - `fix:` → patch (bug fixes)
 - `perf:` → patch (performance improvements)
@@ -158,6 +164,7 @@ pnpm release                         # Build and publish to npm
 ```
 
 **Changeset Configuration:**
+
 - Base branch: `main`
 - Access: `public` (all packages published publicly)
 - Independent versioning (each package versioned separately)
@@ -221,12 +228,14 @@ Currently only `@tapestrylab/extract` is implemented. Other packages are placeho
 ### TypeScript Configuration
 
 **Root `tsconfig.json`:**
+
 - Strict mode enabled
 - ES2022 target
 - ESNext modules with bundler resolution
 - Composite projects (for project references)
 
 **Package-level configs:**
+
 - Extend root config
 - Add package-specific paths and includes
 
@@ -243,6 +252,7 @@ The `@tapestrylab/extract` package is the only fully implemented package. For de
 **See:** `packages/extract/CLAUDE.md`
 
 **Quick summary:**
+
 - Plugin-based architecture for component metadata extraction
 - Uses `oxc-parser` (Rust-based) for fast TypeScript/JSX parsing
 - Supports React components with TypeScript props, JSDoc, and complex types
@@ -252,11 +262,13 @@ The `@tapestrylab/extract` package is the only fully implemented package. For de
 ### Stub Packages
 
 Packages `resolve`, `graph`, `plugin-figma`, `plugin-vscode`, and `shared` have:
+
 - Skeleton `package.json` files
 - Echo statements in scripts (e.g., `"build": "echo \"Build script not yet implemented\""`)
 - No source code yet
 
 When implementing these packages, follow the patterns from `extract`:
+
 - Use `tsdown` for building (or appropriate bundler)
 - Use Vitest for testing
 - Colocate test files with source (`.test.ts`)
@@ -334,19 +346,23 @@ All packages follow the `@tapestrylab/*` scope:
 ## Key External Dependencies
 
 **Monorepo Tools:**
+
 - `turbo` - Task orchestration and caching
 - `pnpm` - Fast, efficient package manager with workspace support
 - `@changesets/cli` - Version management and publishing
 
 **Build Tools:**
+
 - `tsdown` - TypeScript bundler (used in extract package)
 - `typescript` - Type checking
 
 **Testing:**
+
 - `vitest` - Fast unit test framework
 - `@vitest/ui` - Interactive test UI
 
 **Formatting:**
+
 - `prettier` - Code formatting
 
 ## Important Files
@@ -357,3 +373,4 @@ All packages follow the `@tapestrylab/*` scope:
 - **`package.json`** - Root package scripts and devDependencies
 - **`tsconfig.json`** - Shared TypeScript configuration
 - **`.nvmrc`** - Node version specification
+- All file names for functions should be kebab case. Function names themselves should be pascalCase. Everything should be functional unless there is a clear beneft to Classes. All test file names should match the file names for the file they are testing.

@@ -1,10 +1,11 @@
 import { describe, it, expect, vi } from "vitest";
-import { createResolver, strategies, Resolver } from "./index.js";
+import { createResolver, strategies, type Resolver } from "./index.js";
 
 describe("createResolver", () => {
   it("should create a Resolver instance", () => {
     const resolver = createResolver();
-    expect(resolver).toBeInstanceOf(Resolver);
+    expect(resolver).toBeDefined();
+    expect(typeof resolver.resolve).toBe("function");
   });
 
   it("should accept configuration", () => {
@@ -12,7 +13,7 @@ describe("createResolver", () => {
       strategies: [strategies.local()],
       cache: false,
     });
-    expect(resolver).toBeInstanceOf(Resolver);
+    expect(resolver).toBeDefined();
     expect(resolver.getStrategies()).toHaveLength(1);
   });
 });

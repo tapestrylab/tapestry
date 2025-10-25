@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { Resolver } from "./Resolver.js";
+import { createResolver } from "./resolver.js";
 import type { ResolverStrategy, ResolvedEntry } from "./types.js";
 
 // Mock strategy that always resolves
@@ -26,16 +26,15 @@ const mockErrorStrategy: ResolverStrategy = {
   },
 };
 
-describe("Resolver", () => {
-  describe("constructor", () => {
+describe("createResolver", () => {
+  describe("factory function", () => {
     it("should create resolver with default config", () => {
-      const resolver = new Resolver();
-      expect(resolver).toBeInstanceOf(Resolver);
+      const resolver = createResolver();
       expect(resolver.getStrategies()).toEqual([]);
     });
 
     it("should create resolver with strategies", () => {
-      const resolver = new Resolver({
+      const resolver = createResolver({
         strategies: [mockSuccessStrategy],
       });
       expect(resolver.getStrategies()).toHaveLength(1);
@@ -43,14 +42,14 @@ describe("Resolver", () => {
     });
 
     it("should create resolver with cache disabled", () => {
-      const resolver = new Resolver({ cache: false });
+      const resolver = createResolver({ cache: false });
       expect(resolver.getCacheSize()).toBe(0);
     });
   });
 
   describe("resolve", () => {
     it("should resolve using the first successful strategy", async () => {
-      const resolver = new Resolver({
+      const resolver = createResolver({
         strategies: [mockFailStrategy, mockSuccessStrategy],
       });
 
@@ -63,7 +62,7 @@ describe("Resolver", () => {
     });
 
     it("should return null if all strategies fail", async () => {
-      const resolver = new Resolver({
+      const resolver = createResolver({
         strategies: [mockFailStrategy],
       });
 
@@ -81,7 +80,7 @@ describe("Resolver", () => {
         },
       };
 
-      const resolver = new Resolver({
+      const resolver = createResolver({
         strategies: [countingStrategy],
       });
 
@@ -102,7 +101,7 @@ describe("Resolver", () => {
         },
       };
 
-      const resolver = new Resolver({
+      const resolver = createResolver({
         strategies: [countingFailStrategy],
       });
 
@@ -122,7 +121,7 @@ describe("Resolver", () => {
         },
       };
 
-      const resolver = new Resolver({
+      const resolver = createResolver({
         strategies: [countingStrategy],
         cache: false,
       });
@@ -134,7 +133,7 @@ describe("Resolver", () => {
     });
 
     it("should handle errors gracefully and continue to next strategy", async () => {
-      const resolver = new Resolver({
+      const resolver = createResolver({
         strategies: [mockErrorStrategy, mockSuccessStrategy],
       });
 
@@ -156,7 +155,7 @@ describe("Resolver", () => {
         },
       };
 
-      const resolver = new Resolver({
+      const resolver = createResolver({
         strategies: [contextCapturingStrategy],
         context: { root: "/base" },
       });
@@ -172,7 +171,7 @@ describe("Resolver", () => {
 
   describe("resolveMany", () => {
     it("should resolve multiple identifiers in parallel", async () => {
-      const resolver = new Resolver({
+      const resolver = createResolver({
         strategies: [mockSuccessStrategy],
       });
 
@@ -202,7 +201,7 @@ describe("Resolver", () => {
         },
       };
 
-      const resolver = new Resolver({
+      const resolver = createResolver({
         strategies: [selectiveStrategy],
       });
 
@@ -215,7 +214,7 @@ describe("Resolver", () => {
 
   describe("clearCache", () => {
     it("should clear all cached entries", async () => {
-      const resolver = new Resolver({
+      const resolver = createResolver({
         strategies: [mockSuccessStrategy],
       });
 
@@ -230,7 +229,7 @@ describe("Resolver", () => {
 
   describe("addStrategy", () => {
     it("should add strategy to the end by default", () => {
-      const resolver = new Resolver({
+      const resolver = createResolver({
         strategies: [mockFailStrategy],
       });
 
@@ -242,7 +241,7 @@ describe("Resolver", () => {
     });
 
     it("should prepend strategy when prepend=true", () => {
-      const resolver = new Resolver({
+      const resolver = createResolver({
         strategies: [mockFailStrategy],
       });
 

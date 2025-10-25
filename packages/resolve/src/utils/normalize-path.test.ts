@@ -5,7 +5,7 @@ import {
   isAbsolutePath,
   isUrl,
   isBareModuleSpecifier,
-} from "./normalizePath.js";
+} from "./normalize-path.js";
 
 describe("normalizePath", () => {
   it("should normalize Windows-style paths to Unix-style", () => {

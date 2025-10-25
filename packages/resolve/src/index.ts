@@ -12,7 +12,8 @@
  */
 
 // Core module resolution exports
-export { Resolver } from "./Resolver.js";
+export { createResolver } from "./resolver.js";
+export type { Resolver } from "./resolver.js";
 export type {
   ResolverConfig,
   ResolverStrategy,
@@ -22,11 +23,22 @@ export type {
 } from "./types.js";
 
 // Component documentation exports
-export { ComponentDocResolver } from "./ComponentDocResolver.js";
-export { ComponentLoader } from "./ComponentLoader.js";
-export { SSRRenderer } from "./SSRRenderer.js";
-export { SandboxConfigGenerator } from "./SandboxConfigGenerator.js";
-export { ExtractIntegration } from "./ExtractIntegration.js";
+export { createComponentDocResolver } from "./component-doc-resolver.js";
+export type {
+  ComponentDocResolver,
+  ComponentDocResolverConfig,
+} from "./component-doc-resolver.js";
+
+export { createComponentLoader } from "./component-loader.js";
+export type { ComponentLoader, LoadedComponent } from "./component-loader.js";
+
+export { createSSRRenderer } from "./ssr-renderer.js";
+export type { SSRRenderer, SSRRendererConfig } from "./ssr-renderer.js";
+
+export { createSandboxConfigGenerator } from "./sandbox-config-generator.js";
+export type { SandboxConfigGenerator } from "./sandbox-config-generator.js";
+
+export { toComponentDoc, toComponentDocs } from "./extract-integration.js";
 
 export type {
   ComponentDoc,
@@ -35,7 +47,6 @@ export type {
   SandboxConfig,
   ResolveOptions,
 } from "./component-types.js";
-export type { LoadedComponent } from "./ComponentLoader.js";
 
 // Strategy exports
 export { local } from "./strategies/local.js";
@@ -54,15 +65,12 @@ export {
   isAbsolutePath,
   isUrl,
   isBareModuleSpecifier,
-} from "./utils/normalizePath.js";
+} from "./utils/normalize-path.js";
 
 // Convenience exports
 import { local } from "./strategies/local.js";
 import { cdn } from "./strategies/cdn.js";
 import { remote } from "./strategies/remote.js";
-import { Resolver } from "./Resolver.js";
-import { ComponentDocResolver } from "./ComponentDocResolver.js";
-import type { ResolverConfig } from "./types.js";
 
 /**
  * Built-in resolution strategies
@@ -72,58 +80,3 @@ export const strategies = {
   cdn,
   remote,
 };
-
-/**
- * Create a module resolver with the given configuration
- * @param config - Resolver configuration
- * @returns Configured Resolver instance
- *
- * @example
- * ```ts
- * const resolver = createResolver({
- *   strategies: [
- *     strategies.local({ root: '/src', alias: { '@ui': 'components' } }),
- *     strategies.cdn({ provider: 'esm.sh' })
- *   ]
- * });
- *
- * const result = await resolver.resolve('@radix-ui/react-popover');
- * console.log(result?.path); // https://esm.sh/@radix-ui/react-popover
- * ```
- */
-export function createResolver(config: ResolverConfig = {}): Resolver {
-  return new Resolver(config);
-}
-
-/**
- * Create a component documentation resolver
- * @param config - Module resolver configuration
- * @param options - Component resolver options
- * @returns Configured ComponentDocResolver instance
- *
- * @example
- * ```ts
- * const docResolver = createComponentResolver({
- *   strategies: [
- *     strategies.local({ root: '/src', alias: { '@ui': 'components' } })
- *   ]
- * });
- *
- * const docs = await docResolver.resolve({
- *   entry: '/src/components/Button.tsx',
- *   renderPreview: true,
- *   sandbox: true
- * });
- *
- * console.log(docs.name); // "Button"
- * console.log(docs.props); // [{ name: "children", type: "ReactNode", ... }]
- * console.log(docs.previewHtml); // "<div class=\"tapestry-preview\">...</div>"
- * ```
- */
-export function createComponentResolver(
-  config: ResolverConfig = {},
-  options: { renderFunction?: (component: any, props?: any) => string } = {}
-): ComponentDocResolver {
-  const moduleResolver = createResolver(config);
-  return new ComponentDocResolver(moduleResolver, options);
-}
