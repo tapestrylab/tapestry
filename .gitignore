@@ -36,5 +36,4 @@ Thumbs.db
 *~
 
 # Misc
-.changeset/*.md
 !.changeset/README.md

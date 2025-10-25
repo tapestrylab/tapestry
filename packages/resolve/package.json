@@ -1,0 +1,58 @@
+{
+  "name": "@tapestrylab/resolve",
+  "version": "0.1.0",
+  "description": "Unified system for resolving component, docs, and dependency references across the Tapestry ecosystem",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:ci": "vitest run",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "demo": "tsx scripts/test-resolver.ts"
+  },
+  "dependencies": {
+    "@tapestrylab/extract": "workspace:*",
+    "zod": "^4.1.12"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "keywords": [
+    "design-system",
+    "resolver",
+    "module-resolution",
+    "tapestry"
+  ],
+  "license": "MIT"
+}
