@@ -29,6 +29,7 @@
     "test:extract": "pnpx tsx ./src/cli.ts extract --root ./test --output ./test/metadata.json"
   },
   "dependencies": {
+    "chokidar": "^4.0.3",
     "commander": "^14.0.1",
     "cosmiconfig": "^9.0.0",
     "deepmerge-ts": "^7.1.5",
@@ -38,6 +39,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@types/chokidar": "^2.1.7",
     "@types/react": "^19.2.2"
   },
   "engines": {

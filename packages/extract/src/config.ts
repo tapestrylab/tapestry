@@ -1,5 +1,5 @@
 import { cosmiconfig } from "cosmiconfig";
-import { ExtractConfig, ExtractConfigSchema } from "./types.js";
+import { ExtractConfig, ExtractConfigSchema, DEFAULT_INCLUDE, DEFAULT_EXCLUDE } from "./types.js";
 import path from "node:path";
 import { deepmerge } from "deepmerge-ts";
 
@@ -14,6 +14,15 @@ const explorer = cosmiconfig("tapestry", {
     ".tapestryrc.js",
   ],
 });
+
+/**
+ * Normalize and validate extract config
+ */
+export function normalizeExtractConfig(
+  config: Partial<ExtractConfig>
+): ExtractConfig {
+  return ExtractConfigSchema.parse(config);
+}
 
 export async function loadConfig(
   configPath?: string,
@@ -35,22 +44,9 @@ export async function loadConfig(
     console.warn("No config file found, using defaults");
   }
 
-  // Merge with CLI overrides
-  const defaults = ExtractConfigSchema.parse({
-    include: ["**/*.{tsx,jsx,ts,js}"],
-    exclude: [
-      "**/node_modules/**",
-      "**/dist/**",
-      "**/.next/**",
-      "**/build/**",
-      "**/*.test.{tsx,ts,jsx,js}",
-      "**/*.spec.{tsx,ts,jsx,js}",
-    ],
-    output: "./metadata.json",
-  });
+  // Merge with CLI overrides (schema will apply defaults)
+  const merged = deepmerge(loadedConfig, cliOverrides || {});
 
-  const merged = deepmerge(defaults, loadedConfig, cliOverrides);
-
-  // Validate and return
-  return ExtractConfigSchema.parse(merged);
+  // Validate and return with defaults applied
+  return normalizeExtractConfig(merged);
 }

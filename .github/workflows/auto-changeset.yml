@@ -44,12 +44,16 @@ jobs:
     - name: check changesets
       id: check-changesets
       run: |
-        if [ -d ".changeset" ] && [ "$(find .changeset -name '*.md' ! -name 'README.md' | wc -l)" -gt 0 ]; then
+        # Check if this PR added new changesets (compare to base branch)
+        NEW_CHANGESETS=$(git diff --diff-filter=A --name-only origin/${{ github.base_ref }}...HEAD -- .changeset/ | grep '\.md$' | grep -v 'README.md' || true)
+
+        if [ -n "$NEW_CHANGESETS" ]; then
           echo "exists=true" >> $GITHUB_OUTPUT
-          echo "✓ Changesets already exist"
+          echo "✓ Changesets added in this PR:"
+          echo "$NEW_CHANGESETS"
         else
           echo "exists=false" >> $GITHUB_OUTPUT
-          echo "No changesets found"
+          echo "No new changesets in this PR"
         fi
 
     - name: generate changeset

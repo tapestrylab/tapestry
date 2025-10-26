@@ -184,15 +184,6 @@ function getChangesetSummary(commits, packages) {
   return subjects.map(s => `- ${s}`).join('\n');
 }
 
-function checkExistingChangesets() {
-  if (!fs.existsSync(CHANGESET_DIR)) return false;
-
-  const files = fs.readdirSync(CHANGESET_DIR)
-    .filter(f => f.endsWith('.md') && f !== 'README.md');
-
-  return files.length > 0;
-}
-
 function generateChangesetFile(packages, bumpType, summary) {
   // Generate a random changeset ID
   const id = crypto.randomBytes(4).toString('hex');
@@ -218,12 +209,6 @@ function main() {
   if (currentBranch === 'main' || currentBranch === 'master') {
     console.log('On main/master branch - skipping automatic changeset generation');
     console.log('Create changesets manually with: pnpm changeset');
-    return;
-  }
-
-  // Check if changesets already exist
-  if (checkExistingChangesets()) {
-    console.log('✓ Changesets already exist for this branch');
     return;
   }
 

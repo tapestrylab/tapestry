@@ -7,16 +7,16 @@ import { createComponentLoader } from "./component-loader.js";
 import { createSSRRenderer } from "./ssr-renderer.js";
 import { createSandboxConfigGenerator } from "./sandbox-config-generator.js";
 import { toComponentDoc } from "./extract-integration.js";
-import type { ComponentDoc, ResolveOptions } from "./component-types.js";
+import type { ComponentDoc, ComponentDocResolveOptions } from "./component-types.js";
 
 /**
  * ComponentDocResolver interface
  */
 export interface ComponentDocResolver {
-  resolve(options: ResolveOptions): Promise<ComponentDoc>;
+  resolve(options: ComponentDocResolveOptions): Promise<ComponentDoc>;
   resolveMany(
     entries: string[],
-    options?: Omit<ResolveOptions, "entry">
+    options?: Omit<ComponentDocResolveOptions, "entry">
   ): Promise<ComponentDoc[]>;
 }
 
@@ -66,7 +66,7 @@ export function createComponentDocResolver(
   /**
    * Resolve component documentation with optional SSR preview and sandbox config
    */
-  async function resolve(options: ResolveOptions): Promise<ComponentDoc> {
+  async function resolve(options: ComponentDocResolveOptions): Promise<ComponentDoc> {
     // Step 1: Load component and resolve imports
     const loaded = await component_loader.load(options.entry);
 
@@ -130,7 +130,7 @@ export function createComponentDocResolver(
    */
   async function resolveMany(
     entries: string[],
-    options: Omit<ResolveOptions, "entry"> = {}
+    options: Omit<ComponentDocResolveOptions, "entry"> = {}
   ): Promise<ComponentDoc[]> {
     return Promise.all(
       entries.map((entry) => resolve({ ...options, entry }))

@@ -374,3 +374,6 @@ All packages follow the `@tapestrylab/*` scope:
 - **`tsconfig.json`** - Shared TypeScript configuration
 - **`.nvmrc`** - Node version specification
 - All file names for functions should be kebab case. Function names themselves should be pascalCase. Everything should be functional unless there is a clear beneft to Classes. All test file names should match the file names for the file they are testing.
+- Commit after each step, phase, feature and fix is implemented and tested
+- Always use typescript files where possible
+- Log any feedback as github issues

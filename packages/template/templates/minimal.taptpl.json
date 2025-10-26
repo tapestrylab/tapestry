@@ -1,0 +1,29 @@
+{
+  "name": "Minimal Documentation",
+  "version": "1.0.0",
+  "description": "Minimal component documentation with just name and props",
+  "outputFormat": "markdown",
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "{{name}}"
+    },
+    {
+      "type": "paragraph",
+      "text": "{{description}}",
+      "if": "description"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Props",
+      "if": "props.length > 0"
+    },
+    {
+      "type": "propsTable",
+      "dataSource": "props",
+      "if": "props.length > 0"
+    }
+  ]
+}

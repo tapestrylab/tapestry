@@ -39,14 +39,42 @@ npx tapestry extract --root ./components --include "**/*.tsx" --exclude "**/*.te
 ```typescript
 import { extract } from "@tapestrylab/extract";
 
+// Simple usage - includes and excludes use smart defaults
 const result = await extract({
   root: "./src",
-  include: ["**/*.tsx"],
-  exclude: ["**/*.test.tsx"],
 });
 
 console.log(result.metadata); // Component metadata
 console.log(result.stats); // Extraction statistics
+
+// Or with custom patterns
+const customResult = await extract({
+  root: "./src",
+  include: ["**/*.tsx"], // Optional - defaults to common patterns
+  exclude: ["**/*.test.tsx"], // Optional - defaults exclude tests, node_modules, etc.
+});
+```
+
+**Convenience Functions:**
+
+```typescript
+import { extractComponent, extractFromPattern, extractFromDirectory } from "@tapestrylab/extract";
+
+// Extract a single component
+const button = await extractComponent('./src/components/Button.tsx');
+
+// Extract components matching a pattern
+const components = await extractFromPattern('**/*.tsx', {
+  root: './src'
+});
+
+// Extract from a directory (non-recursive by default)
+const allComponents = await extractFromDirectory('./src/components');
+
+// Extract recursively
+const recursive = await extractFromDirectory('./src/components', {
+  recursive: true
+});
 ```
 
 ## Configuration
