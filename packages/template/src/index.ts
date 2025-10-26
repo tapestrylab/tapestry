@@ -68,6 +68,7 @@ export {
   loadTheme,
   resolveTheme,
   mergeThemes,
+  deepMergeThemes,
   getComponentMapping,
   defaultTheme,
 } from './theme-resolver';

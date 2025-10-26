@@ -106,6 +106,7 @@ export function getComponentMapping(
 
 /**
  * Merge multiple themes (later themes override earlier ones)
+ * Uses shallow merge at component level - predictable and explicit
  */
 export function mergeThemes(...themes: TapestryTheme[]): TapestryTheme {
   const merged: TapestryTheme = {
@@ -125,6 +126,81 @@ export function mergeThemes(...themes: TapestryTheme[]): TapestryTheme {
         ...merged.global,
         ...theme.global,
       };
+    }
+  }
+
+  return merged;
+}
+
+/**
+ * Check if a value is a plain object (not array, null, etc.)
+ */
+function isPlainObject(value: unknown): value is Record<string, any> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+/**
+ * Deep merge objects recursively
+ */
+function deepMerge<T extends Record<string, any>>(target: T, source: T): T {
+  const result = { ...target };
+
+  for (const key in source) {
+    if (Object.prototype.hasOwnProperty.call(source, key)) {
+      const sourceValue = source[key];
+      const targetValue = result[key];
+
+      if (isPlainObject(sourceValue) && isPlainObject(targetValue)) {
+        // Recursively merge nested objects
+        result[key] = deepMerge(targetValue, sourceValue);
+      } else {
+        // Replace with source value
+        result[key] = sourceValue;
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Deep merge multiple themes (later themes override earlier ones)
+ * Uses deep merge at all levels - useful when extending themes
+ *
+ * @example
+ * ```typescript
+ * import { deepMergeThemes } from '@tapestrylab/template';
+ * import defaultTheme from '@tapestrylab/template/themes/default.theme.js';
+ *
+ * const customTheme = deepMergeThemes(defaultTheme, {
+ *   components: {
+ *     propsTable: {
+ *       styles: {
+ *         header: 'bg-brand-primary' // Only overrides header, preserves other styles
+ *       }
+ *     }
+ *   }
+ * });
+ * ```
+ */
+export function deepMergeThemes(...themes: TapestryTheme[]): TapestryTheme {
+  const merged: TapestryTheme = {
+    components: {},
+    global: {},
+  };
+
+  for (const theme of themes) {
+    if (theme.components) {
+      merged.components = deepMerge(
+        merged.components as Record<string, any>,
+        theme.components as Record<string, any>
+      );
+    }
+    if (theme.global) {
+      merged.global = deepMerge(
+        merged.global as Record<string, any>,
+        theme.global as Record<string, any>
+      );
     }
   }
 

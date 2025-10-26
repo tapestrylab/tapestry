@@ -163,20 +163,66 @@ const components = await extractComponents({
 
 ### Theming
 
+The template package includes a flexible theming system that allows you to customize the appearance of generated documentation.
+
+#### Using Built-in Themes
+
+Three preset themes are included:
+
+```typescript
+import { generateAll } from '@tapestrylab/template';
+
+await generateAll({
+  source: './src/components',
+  outputDir: './docs',
+  template: myTemplate,
+  theme: './node_modules/@tapestrylab/template/themes/default.theme.js',
+  // or 'minimal.theme.js', 'documentation.theme.js'
+});
+```
+
+**Built-in themes:**
+- `default.theme.js` - Balanced styling with borders and backgrounds
+- `minimal.theme.js` - Minimal styling, mostly unstyled
+- `documentation.theme.js` - Documentation-focused with enhanced spacing and colors
+
+#### Creating a Custom Theme
+
+Create a theme file that exports a theme object:
+
 ```javascript
-// tapestry.theme.js
+// my-theme.theme.js
 export default {
   components: {
     propsTable: {
       styles: {
-        table: 'border-collapse border',
-        header: 'bg-gray-100',
+        table: 'border-collapse border border-gray-300',
+        header: 'bg-blue-100 font-bold',
+        row: 'hover:bg-gray-50',
+        cell: 'px-4 py-2',
+      },
+    },
+    callout: {
+      styles: {
+        container: 'p-4 rounded-lg border-l-4',
+        warning: 'bg-yellow-50 border-yellow-400',
+        info: 'bg-blue-50 border-blue-400',
+      },
+    },
+    codeBlock: {
+      styles: {
+        pre: 'bg-gray-900 text-gray-100 rounded-lg p-4',
+        code: 'font-mono text-sm',
+      },
+      props: {
+        showLineNumbers: true,
       },
     },
   },
   global: {
     fontFamily: 'Inter, sans-serif',
     accentColor: '#3b82f6',
+    borderRadius: '8px',
   },
 };
 ```
@@ -184,8 +230,104 @@ export default {
 ```typescript
 import { loadTheme } from '@tapestrylab/template';
 
-const theme = await loadTheme('./tapestry.theme.js');
+const theme = await loadTheme('./my-theme.theme.js');
 ```
+
+#### Extending Built-in Themes
+
+Themes use **shallow merge** at the component level. To extend a built-in theme, manually spread the properties you want to preserve:
+
+```javascript
+// extended-theme.theme.js
+import defaultTheme from '@tapestrylab/template/themes/default.theme.js';
+
+export default {
+  ...defaultTheme,
+  components: {
+    ...defaultTheme.components,
+    // Replace entire propsTable config
+    propsTable: {
+      styles: {
+        table: 'my-custom-table-class',
+        header: 'my-custom-header-class',
+      },
+    },
+    // Selectively override nested properties
+    tabs: {
+      ...defaultTheme.components.tabs,
+      styles: {
+        ...defaultTheme.components.tabs.styles,
+        activeTab: 'border-b-2 border-brand-primary', // Override just activeTab
+      },
+    },
+  },
+  global: {
+    ...defaultTheme.global,
+    accentColor: '#ff6b6b', // Override just accent color
+  },
+};
+```
+
+#### Theme Merge Behavior
+
+**Important:** Custom themes use **shallow merge** at the component level:
+
+- Setting `components.propsTable` **replaces** the entire `propsTable` configuration
+- To preserve nested properties, manually spread them (see example above)
+- **Precedence:** custom theme > default theme
+
+**Why shallow merge?**
+- **Predictable:** You always know exactly what configuration is active
+- **Explicit:** No hidden merging behavior
+- **Type-safe:** Easier for TypeScript to validate
+- **Standard pattern:** Same pattern used by React props, Tailwind, ESLint
+
+**When to use each pattern:**
+
+| Pattern | Use Case |
+|---------|----------|
+| Built-in theme as-is | Quick start, standard styling |
+| Custom theme from scratch | Complete control, brand new design |
+| Extend with spreading | Tweak specific properties, preserve defaults |
+| Deep merge utility | Prefer automatic merging over manual spreading |
+
+#### Deep Merge Utility (Optional)
+
+If you prefer automatic deep merging over manual spreading, use the `deepMergeThemes()` helper:
+
+```typescript
+import { deepMergeThemes } from '@tapestrylab/template';
+import defaultTheme from '@tapestrylab/template/themes/default.theme.js';
+
+const customTheme = deepMergeThemes(defaultTheme, {
+  components: {
+    propsTable: {
+      styles: {
+        header: 'bg-brand-primary', // Only overrides header, preserves other styles
+      },
+    },
+  },
+  global: {
+    accentColor: '#ff6b6b', // Only overrides accentColor, preserves other global settings
+  },
+});
+```
+
+**Trade-offs:**
+- ✅ Less verbose than manual spreading
+- ✅ Automatically preserves nested properties
+- ⚠️ Less explicit - harder to see exactly what's being merged
+- ⚠️ May merge more than intended if you're not careful
+
+#### Available Component Styles
+
+Each component type supports different style keys:
+
+**propsTable:** `table`, `header`, `row`, `cell`
+**tabs:** `container`, `tabList`, `tab`, `activeTab`, `panel`
+**accordion:** `container`, `item`, `header`, `content`
+**callout:** `container`, `icon`, `content`
+**codeBlock:** `container`, `pre`, `code`
 
 ## Built-in Templates
 
