@@ -2,7 +2,9 @@
  * Minimal theme for @tapestrylab/template
  */
 
-export default {
+import type { TapestryTheme } from '../src/types-theme';
+
+const theme: TapestryTheme = {
   components: {
     propsTable: {
       styles: {
@@ -43,3 +45,5 @@ export default {
     borderRadius: '0',
   },
 };
+
+export default theme;

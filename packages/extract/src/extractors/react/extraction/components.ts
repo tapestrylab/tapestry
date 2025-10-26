@@ -8,7 +8,7 @@ import type { ComponentMetadata, PropMetadata } from "../../../types.js";
 import { isReactComponent, isArrowOrFunction, hasJSXReturn } from "../utils/type-guards.js";
 import { extractPropsFromParams } from "./props.js";
 import { extractJSDoc } from "../utils/jsdoc.js";
-import { TypeRegistry } from "../utils/type-resolver.js";
+import { buildTypeRegistry, TypeRegistry } from "../utils/type-resolver.js";
 
 export const extractComponents = (
   program: any,
@@ -19,7 +19,7 @@ export const extractComponents = (
   const processedNames = new Set<string>();
 
   // Build type registry for resolving type references
-  const typeRegistry = TypeRegistry.build(program);
+  const typeRegistry = buildTypeRegistry(program);
 
   const addComponent = (component: ComponentMetadata | null) => {
     if (component && !processedNames.has(component.name)) {

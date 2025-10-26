@@ -7,7 +7,8 @@ import { createReactExtractor } from "./extractors/react/index.js";
 
 export { loadConfig, normalizeExtractConfig } from "./config";
 export * from "./types";
-export { ExtractionCache } from "./cache";
+export { createExtractionCache } from "./cache";
+export type { ExtractionCache } from "./cache";
 export { watch } from "./watcher";
 export type { WatchOptions, Watcher } from "./watcher";
 

@@ -8,7 +8,7 @@ import {
 } from "./types.js";
 import { scanFiles, readFile, getRelativePath } from "./scanner.js";
 import { createReactExtractor } from "./extractors/react/index.js";
-import { ExtractionCache } from "./cache.js";
+import { createExtractionCache } from "./cache.js";
 
 // Default built-in extractors
 const DEFAULT_EXTRACTORS = [createReactExtractor()];
@@ -45,7 +45,7 @@ export async function extract(
   const extractors = [...customExtractors, ...DEFAULT_EXTRACTORS];
 
   // Initialize cache if enabled
-  const cache = config.cache ? new ExtractionCache() : null;
+  const cache = config.cache ? createExtractionCache() : null;
 
   // Run beforeScan hooks
   for (const extractor of extractors) {

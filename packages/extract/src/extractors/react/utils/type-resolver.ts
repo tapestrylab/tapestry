@@ -10,50 +10,53 @@ export interface TypeDefinition {
   node: any; // The actual type node (TSTypeAliasDeclaration, TSInterfaceDeclaration, etc.)
 }
 
-export class TypeRegistry {
-  private types = new Map<string, any>();
-
-  /**
-   * Build a registry of all type and interface declarations in the program
-   */
-  static build(program: any): TypeRegistry {
-    const registry = new TypeRegistry();
-
-    const visitor = new Visitor({
-      "TSTypeAliasDeclaration": (node: any) => {
-        if (node.id?.name) {
-          registry.register(node.id.name, node.typeAnnotation);
-        }
-      },
-      "TSInterfaceDeclaration": (node: any) => {
-        if (node.id?.name) {
-          registry.register(node.id.name, node);
-        }
-      },
-    });
-
-    visitor.visit(program);
-    return registry;
-  }
-
-  private register(name: string, node: any): void {
-    this.types.set(name, node);
-  }
-
+export interface TypeRegistry {
   /**
    * Resolve a type reference by name
    */
-  resolve(typeName: string): any | undefined {
-    return this.types.get(typeName);
-  }
+  resolve(typeName: string): any | undefined;
 
   /**
    * Check if a type is registered
    */
-  has(typeName: string): boolean {
-    return this.types.has(typeName);
-  }
+  has(typeName: string): boolean;
 }
+
+/**
+ * Build a registry of all type and interface declarations in the program
+ */
+export const buildTypeRegistry = (program: any): TypeRegistry => {
+  const types = new Map<string, any>();
+
+  const register = (name: string, node: any): void => {
+    types.set(name, node);
+  };
+
+  const visitor = new Visitor({
+    "TSTypeAliasDeclaration": (node: any) => {
+      if (node.id?.name) {
+        register(node.id.name, node.typeAnnotation);
+      }
+    },
+    "TSInterfaceDeclaration": (node: any) => {
+      if (node.id?.name) {
+        register(node.id.name, node);
+      }
+    },
+  });
+
+  visitor.visit(program);
+
+  return {
+    resolve(typeName: string): any | undefined {
+      return types.get(typeName);
+    },
+
+    has(typeName: string): boolean {
+      return types.has(typeName);
+    },
+  };
+};
 
 /**
  * Resolve a type annotation, following type references
