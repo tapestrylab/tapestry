@@ -1,4 +1,4 @@
-# @tapestrylab/extract
+# @tapestrylab/resolve
 
 ## 0.2.0
 
@@ -13,16 +13,9 @@
   - add convenience functions for common use cases
   - make config fields optional with smart defaults
   - implement Phase 1 template engine
-
-## 0.1.2
-
-### Patch Changes
-
-- b8c329a: Fix JSDoc parsing to properly extract component descriptions and prop metadata including examples, links, and enhanced documentation
-- e889ac8: Fixes components metadata that use type definitions
-
-## 0.1.1
+- 018c079: - implement resolver package with local, CDN strategies and SSR capabilities
 
 ### Patch Changes
 
-- 536c0bf: Publish the README
+- Updated dependencies [bd3d3ca]
+  - @tapestrylab/extract@0.2.0
