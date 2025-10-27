@@ -53,7 +53,8 @@ export type {
 } from './types-theme';
 
 // Template Builder
-export { TemplateBuilder, createTemplate } from './template-builder';
+export type { TemplateBuilder } from './template-builder';
+export { createTemplate } from './template-builder';
 
 // Template Matcher
 export { matchTemplate, matchTemplates } from './matcher';
