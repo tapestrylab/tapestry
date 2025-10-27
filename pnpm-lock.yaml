@@ -36,6 +36,21 @@ importers:
         specifier: ^4.0.2
         version: 4.0.2(@types/node@24.9.1)(@vitest/ui@4.0.2)(jiti@2.6.1)(tsx@4.20.6)
 
+  packages/cli:
+    dependencies:
+      '@tapestrylab/extract':
+        specifier: workspace:*
+        version: link:../extract
+      '@tapestrylab/template':
+        specifier: workspace:*
+        version: link:../template
+      commander:
+        specifier: ^14.0.1
+        version: 14.0.1
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
+
   packages/extract:
     dependencies:
       chokidar:
