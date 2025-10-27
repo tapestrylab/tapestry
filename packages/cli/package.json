@@ -1,0 +1,42 @@
+{
+  "name": "@tapestrylab/cli",
+  "version": "0.1.0",
+  "description": "Unified CLI for all Tapestry tools",
+  "type": "module",
+  "bin": {
+    "tapestry": "./dist/index.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:ci": "vitest run",
+    "test:ui": "vitest --ui"
+  },
+  "dependencies": {
+    "@tapestrylab/extract": "workspace:*",
+    "@tapestrylab/template": "workspace:*",
+    "commander": "^14.0.1",
+    "picocolors": "^1.1.1"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "keywords": [
+    "design-system",
+    "cli",
+    "tapestry"
+  ],
+  "license": "MIT"
+}
