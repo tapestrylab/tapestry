@@ -1,18 +1,36 @@
 ---
 '@tapestrylab/template': minor
+'@tapestrylab/cli': minor
 ---
 
-feat(template): add CLI tool for zero-code documentation generation
+refactor: move CLI functionality to unified @tapestrylab/cli package
 
-Adds a comprehensive CLI tool with the following commands:
+**Breaking Change for CLI users**: The `@tapestrylab/template` package no longer includes CLI functionality. All CLI commands have been moved to the new `@tapestrylab/cli` package.
 
-- `generate`: Generate documentation from component source files with support for templates, themes, and multiple output formats
-- `list`: Display all available built-in templates with descriptions
-- `init`: Scaffold configuration files (tapestry.config.js, custom template, custom theme)
+**Changes:**
 
-The CLI supports:
-- Single file or batch directory generation
-- Built-in and custom templates
-- Custom themes
-- Markdown, MDX, and HTML output formats
-- Relationship resolution (dependencies, usage sites)
+- **@tapestrylab/template**: Removed CLI functionality to focus on programmatic API
+  - The package now exports only the core template engine and components
+  - All programmatic APIs remain unchanged and fully functional
+  - Users relying on the programmatic API are not affected
+
+- **@tapestrylab/cli**: New unified CLI package for all Tapestry tools
+  - Single `tapestry` command for all tools
+  - Commands: `extract`, `generate`, `list`, `init`
+  - Provides unified interface delegating to underlying packages
+  - Install via: `npm install -g @tapestrylab/cli`
+
+**Migration for CLI users:**
+
+```bash
+# Before
+npx @tapestrylab/template generate ./Button.tsx
+
+# After
+npm install -g @tapestrylab/cli
+tapestry generate ./Button.tsx
+```
+
+**Migration for programmatic API users:**
+
+No changes required - all programmatic APIs remain the same.
