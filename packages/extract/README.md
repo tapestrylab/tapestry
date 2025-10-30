@@ -24,15 +24,7 @@ pnpm add @tapestrylab/extract
 
 ### Usage
 
-#### Command Line
-
-```bash
-# Extract metadata from your components
-npx tapestry extract --root ./src --output ./metadata.json
-
-# With custom configuration
-npx tapestry extract --root ./components --include "**/*.tsx" --exclude "**/*.test.tsx"
-```
+> **CLI Usage**: For command-line usage, install `@tapestrylab/cli` which provides the unified `tapestry` command. See the [CLI documentation](../cli/README.md) for details.
 
 #### Programmatic API
 

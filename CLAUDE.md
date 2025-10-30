@@ -15,16 +15,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```
 tapestry/
 ├── packages/                    # Published npm packages
-│   ├── extract/                # Core extraction engine (v0.1.2)
-│   ├── resolve/                # Dependency/relationship resolver (stub)
-│   ├── graph/                  # Data model and querying (stub)
-│   ├── plugin-figma/           # Figma integration plugin (stub)
-│   ├── plugin-vscode/          # VS Code integration plugin (stub)
-│   └── shared/                 # Internal shared utilities (stub)
-├── apps/                        # Applications
-│   ├── studio/                 # Main Studio app (stub)
-│   ├── docs/                   # Documentation site (stub)
-│   └── playground/             # Demo/sandbox environment (stub)
+│   ├── extract/                # Component metadata extraction (v0.2.0)
+│   ├── resolve/                # Module/component resolution system (v0.2.0)
+│   ├── template/               # Documentation template engine (v0.2.0)
+│   ├── cli/                    # Unified CLI tool (v0.1.0)
+│   └── graph/                  # Data model and querying (stub)
 ├── turbo.json                   # Turborepo task pipeline configuration
 ├── .changeset/                  # Changesets for version management
 └── pnpm-workspace.yaml          # pnpm workspace configuration
@@ -32,11 +27,14 @@ tapestry/
 
 **Active Packages:**
 
-- `@tapestrylab/extract` - Fully implemented component metadata extractor (see `packages/extract/CLAUDE.md`)
+- `@tapestrylab/extract` (v0.2.0) - Component metadata extractor (see `packages/extract/CLAUDE.md`)
+- `@tapestrylab/resolve` (v0.2.0) - Module and component resolution system (see `packages/resolve/CLAUDE.md`)
+- `@tapestrylab/template` (v0.2.0) - Documentation template engine with theming (see `packages/template/CLAUDE.md`)
+- `@tapestrylab/cli` (v0.1.0) - Unified CLI for all Tapestry tools (see `packages/cli/README.md`)
 
 **Stub Packages:**
 
-- All other packages/apps have placeholder package.json files with unimplemented scripts
+- `@tapestrylab/graph` - Data model and querying utilities (placeholder)
 
 ## Development Commands
 
@@ -216,14 +214,18 @@ Tasks defined in `turbo.json` with dependency ordering:
 ```
 @tapestrylab/extract (standalone, no internal deps)
     ↓
-@tapestrylab/resolve (future: depends on extract)
+@tapestrylab/resolve (depends on extract)
+    ↓
+@tapestrylab/template (depends on extract + resolve)
+    ↓
+@tapestrylab/cli (depends on extract + template)
     ↓
 @tapestrylab/graph (future: depends on resolve)
-    ↓
-@tapestrylab/studio (future: depends on graph)
 ```
 
-Currently only `@tapestrylab/extract` is implemented. Other packages are placeholders.
+**Current Implementation Status:**
+- `extract`, `resolve`, `template`, and `cli` are fully implemented
+- `graph` is a placeholder for future development
 
 ### TypeScript Configuration
 
@@ -245,9 +247,9 @@ All packages use **ES modules** (`"type": "module"` in package.json where applic
 
 ## Key Implementation Details
 
-### Extract Package (Core)
+### Extract Package
 
-The `@tapestrylab/extract` package is the only fully implemented package. For detailed information:
+The `@tapestrylab/extract` package extracts component metadata from source files.
 
 **See:** `packages/extract/CLAUDE.md`
 
@@ -256,20 +258,63 @@ The `@tapestrylab/extract` package is the only fully implemented package. For de
 - Plugin-based architecture for component metadata extraction
 - Uses `oxc-parser` (Rust-based) for fast TypeScript/JSX parsing
 - Supports React components with TypeScript props, JSDoc, and complex types
-- CLI tool: `tapestry-extract` (programmatic API also available)
+- Programmatic API (CLI available via `@tapestrylab/cli`)
 - Built with `tsdown`, tested with Vitest
+
+### Resolve Package
+
+The `@tapestrylab/resolve` package provides unified module and component resolution.
+
+**See:** `packages/resolve/CLAUDE.md`
+
+**Quick summary:**
+
+- Strategy-based resolution system (local, CDN, remote)
+- Browser and Node.js compatible
+- Supports filesystem paths, npm packages, and CDN URLs
+- Built-in caching for performance
+- Used by `template` package for relationship resolution
+
+### Template Package
+
+The `@tapestrylab/template` package generates structured component documentation.
+
+**See:** `packages/template/CLAUDE.md`
+
+**Quick summary:**
+
+- JSON-based template system with variable interpolation
+- Integrates with `extract` for component data
+- Integrates with `resolve` for relationship tracking
+- Multiple output formats (Markdown, MDX, HTML)
+- Theming system with built-in and custom themes
+- Programmatic API (CLI available via `@tapestrylab/cli`)
+- Built with `tsdown`, tested with Vitest
+
+### CLI Package
+
+The `@tapestrylab/cli` package provides a unified CLI for all Tapestry tools.
+
+**See:** `packages/cli/README.md`
+
+**Quick summary:**
+
+- Single `tapestry` command for all tools
+- Delegates to underlying packages (`extract`, `template`)
+- Commands: `extract`, `generate`, `list`, `init`
+- Provides unified CLI interface for library packages
 
 ### Stub Packages
 
-Packages `resolve`, `graph`, `plugin-figma`, `plugin-vscode`, and `shared` have:
+The `graph` package is a placeholder for future development:
 
-- Skeleton `package.json` files
-- Echo statements in scripts (e.g., `"build": "echo \"Build script not yet implemented\""`)
+- Skeleton `package.json` file
+- Echo statements in scripts
 - No source code yet
 
-When implementing these packages, follow the patterns from `extract`:
+When implementing stub packages, follow the patterns from existing packages:
 
-- Use `tsdown` for building (or appropriate bundler)
+- Use `tsdown` for building
 - Use Vitest for testing
 - Colocate test files with source (`.test.ts`)
 - Create package-level `README.md` and `CLAUDE.md` files
@@ -340,8 +385,7 @@ pnpm --version
 
 All packages follow the `@tapestrylab/*` scope:
 
-- Published packages: `@tapestrylab/extract`, `@tapestrylab/resolve`, etc.
-- Private apps: `@tapestrylab/studio`, `@tapestrylab/docs`, etc.
+- Published packages: `@tapestrylab/extract`, `@tapestrylab/resolve`, `@tapestrylab/template`, `@tapestrylab/cli`, `@tapestrylab/graph`
 
 ## Key External Dependencies
 
@@ -377,3 +421,4 @@ All packages follow the `@tapestrylab/*` scope:
 - Commit after each step, phase, feature and fix is implemented and tested
 - Always use typescript files where possible
 - Log any feedback as github issues
+- Always use the pnpm --filter to access packages

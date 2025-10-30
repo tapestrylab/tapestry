@@ -5,9 +5,6 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "bin": {
-    "tapestry-extract": "./dist/cli.js"
-  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -25,8 +22,7 @@
     "test": "vitest",
     "test:ci": "vitest run",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage",
-    "test:extract": "pnpx tsx ./src/cli.ts extract --root ./test --output ./test/metadata.json"
+    "test:coverage": "vitest --coverage"
   },
   "dependencies": {
     "chokidar": "^4.0.3",

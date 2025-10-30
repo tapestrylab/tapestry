@@ -17,19 +17,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 
 ## Extract-Specific Commands
 
-### Integration Testing
+> **Note**: This package is now library-only. For CLI usage, see `@tapestrylab/cli`.
 
-```bash
-pnpm test:extract   # Run extraction on test fixtures (outputs to ./test/metadata.json)
-```
-
-The `test:extract` command runs the full extraction pipeline on fixtures in `./test` for integration testing. For general build, test, and type-check commands, see the root `/CLAUDE.md`.
-
-### Running the CLI (Development)
-
-```bash
-pnpx tsx ./src/cli.ts extract --root ./test --output ./test/metadata.json
-```
+For general build, test, and type-check commands, see the root `/CLAUDE.md`.
 
 ## Project Structure
 
@@ -37,7 +27,6 @@ pnpx tsx ./src/cli.ts extract --root ./test --output ./test/metadata.json
 extract/
 ├── src/
 │   ├── index.ts              # Main programmatic API entry point
-│   ├── cli.ts                # CLI entry point (Commander)
 │   ├── config.ts             # Configuration loading (cosmiconfig)
 │   ├── scanner.ts            # File scanning (fast-glob)
 │   ├── extractor.ts          # Extraction orchestration
@@ -57,7 +46,7 @@ For contribution guidelines, see `/CONTRIBUTING.md` in the repository root.
 
 The extraction process follows a three-stage pipeline:
 
-1. **Configuration (`config.ts`)**: Loads configuration from cosmiconfig-compatible files (e.g., `tapestry.config.js`, `.tapestryrc`) or CLI arguments. Merges defaults with file-based config and CLI overrides using `deepmerge-ts`.
+1. **Configuration (`config.ts`)**: Loads configuration from cosmiconfig-compatible files (e.g., `tapestry.config.js`, `.tapestryrc`) or programmatic arguments. Merges defaults with file-based config and programmatic overrides using `deepmerge-ts`.
 
 2. **Scanning (`scanner.ts`)**: Uses `fast-glob` to find files matching include/exclude patterns from the config. Returns absolute file paths.
 
@@ -121,7 +110,6 @@ For detailed implementation information, see `src/extractors/react/README.md`.
 ### Entry Points
 
 - **Programmatic API** (`index.ts`): `extract(config?)` function for library usage
-- **CLI** (`cli.ts`): Commander-based CLI with `extract` command, supports config file and CLI overrides
 
 ### Output Format
 
@@ -140,8 +128,7 @@ The tool produces `ExtractResult` containing:
 - **Parser**: `oxc-parser` for extremely fast TypeScript/JSX parsing (Rust-based)
 - **Type System**: All types defined in `types.ts` with Zod schema validation for config
 - **Configuration**: Cosmiconfig integration supporting `tapestry.config.{js,ts,mjs,cjs}` and `.tapestryrc{,.json,.js}`
-- **CLI Binary**: `tapestry-extract` command (two entry points bundled via tsdown: library API and CLI)
-- **Dependencies**: `fast-glob` (scanning), `deepmerge-ts` (config merging), `commander` (CLI), `picocolors` (terminal output)
+- **Dependencies**: `fast-glob` (scanning), `deepmerge-ts` (config merging), `commander` (used by CLI package), `picocolors` (terminal output)
 
 ## Adding New Extractors
 
@@ -157,15 +144,23 @@ To add support for new component types (e.g., Vue, Svelte):
 
 ### Debugging Extraction Issues
 
+Use the programmatic API for debugging:
+
+```typescript
+import { extract } from '@tapestrylab/extract';
+
+const result = await extract({
+  root: './test',
+});
+
+console.log(result.metadata);
+console.log(result.errors);
+```
+
+Or use the unified CLI from `@tapestrylab/cli`:
+
 ```bash
-# Run extraction with detailed output
-pnpx tsx ./src/cli.ts extract --root ./test --output ./test/metadata.json
-
-# Inspect the output
-cat ./test/metadata.json | jq '.'
-
-# Check for errors in extraction
-cat ./test/metadata.json | jq '.errors'
+npx tapestry extract --root ./test --output ./test/metadata.json
 ```
 
 ### Testing Specific Extractors
@@ -203,7 +198,6 @@ The React extractor uses `oxc-parser` for AST traversal. When debugging:
 
 - **Type Definitions**: `src/types.ts` - All core interfaces and Zod schemas
 - **Main API**: `src/index.ts` - Programmatic API entry point
-- **CLI**: `src/cli.ts` - Command-line interface
 - **Config Loading**: `src/config.ts` - Configuration file loading and merging
 - **File Scanning**: `src/scanner.ts` - File discovery using fast-glob
 - **Extraction Orchestration**: `src/extractor.ts` - Main extraction coordinator
