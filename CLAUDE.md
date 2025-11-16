@@ -19,6 +19,7 @@ tapestry/
 │   ├── resolve/                # Module/component resolution system (v0.2.0)
 │   ├── template/               # Documentation template engine (v0.2.0)
 │   ├── cli/                    # Unified CLI tool (v0.1.0)
+│   ├── studio/                 # Interactive playground (planned)
 │   └── graph/                  # Data model and querying (stub)
 ├── turbo.json                   # Turborepo task pipeline configuration
 ├── .changeset/                  # Changesets for version management
@@ -32,9 +33,10 @@ tapestry/
 - `@tapestrylab/template` (v0.2.0) - Documentation template engine with theming (see `packages/template/CLAUDE.md`)
 - `@tapestrylab/cli` (v0.1.0) - Unified CLI for all Tapestry tools (see `packages/cli/README.md`)
 
-**Stub Packages:**
+**Planned Packages:**
 
-- `@tapestrylab/graph` - Data model and querying utilities (placeholder)
+- `@tapestrylab/studio` - Interactive web-based playground for design systems (see `packages/studio/README.md`)
+- `@tapestrylab/graph` - Data model and querying utilities (stub)
 
 ## Development Commands
 
@@ -220,11 +222,14 @@ Tasks defined in `turbo.json` with dependency ordering:
     ↓
 @tapestrylab/cli (depends on extract + template)
     ↓
-@tapestrylab/graph (future: depends on resolve)
+@tapestrylab/studio (planned: depends on extract + resolve + template)
+    ↓
+@tapestrylab/graph (planned: depends on resolve)
 ```
 
 **Current Implementation Status:**
 - `extract`, `resolve`, `template`, and `cli` are fully implemented
+- `studio` is planned (documentation created, implementation pending)
 - `graph` is a placeholder for future development
 
 ### TypeScript Configuration
@@ -304,7 +309,32 @@ The `@tapestrylab/cli` package provides a unified CLI for all Tapestry tools.
 - Commands: `extract`, `generate`, `list`, `init`
 - Provides unified CLI interface for library packages
 
-### Stub Packages
+### Studio Package (Planned)
+
+The `@tapestrylab/studio` package will be an interactive web-based playground for design systems.
+
+**See:** `packages/studio/README.md` and `packages/studio/CLAUDE.md`
+
+**Quick summary:**
+
+- Interactive component playground with live preview
+- Monaco-based code editor with TypeScript support
+- Automatic metadata extraction and documentation generation
+- CDN-powered module resolution for npm packages
+- Integration with all Tapestry packages (extract, resolve, template)
+- React + Vite application with modern UI (Radix, Tailwind)
+- Shareable playground URLs and component gallery
+
+**Planned Features:**
+
+- Multi-framework support (React, Vue, Svelte)
+- Real-time component preview in sandboxed iframe
+- Auto-generated props control panel
+- Live documentation generation
+- Component gallery and templates
+- Community sharing and collaboration
+
+### Planned Packages
 
 The `graph` package is a placeholder for future development:
 

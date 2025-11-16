@@ -18,10 +18,15 @@ Tapestry is a monorepo that provides a comprehensive toolkit for building, docum
 
 ### Published Packages
 
-- **[@tapestrylab/extract](packages/extract)** - Component metadata extractor
-- **@tapestrylab/resolve** - Dependency and relationship resolver (coming soon)
-- **@tapestrylab/graph** - Data model and querying layer (coming soon)
-- **@tapestrylab/shared** - Internal shared utilities (coming soon)
+- **[@tapestrylab/extract](packages/extract)** (v0.2.0) - Component metadata extraction from source files
+- **[@tapestrylab/resolve](packages/resolve)** (v0.2.0) - Module and component resolution system
+- **[@tapestrylab/template](packages/template)** (v0.2.0) - Documentation template engine with theming
+- **[@tapestrylab/cli](packages/cli)** (v0.1.0) - Unified CLI for all Tapestry tools
+
+### Planned Packages
+
+- **[@tapestrylab/studio](packages/studio)** - Interactive web-based playground for design systems (🚧 planned)
+- **[@tapestrylab/graph](packages/graph)** - Data model and querying layer (🚧 stub)
 
 ## Getting Started
 
@@ -108,7 +113,12 @@ Tapestry uses a modular monorepo architecture with independent packages that wor
 ```
 tapestry/
 ├── packages/                    # Published npm packages
-│   ├── extract/                # Core extraction engine
+│   ├── extract/                # Component metadata extraction (v0.2.0)
+│   ├── resolve/                # Module and component resolution (v0.2.0)
+│   ├── template/               # Documentation template engine (v0.2.0)
+│   ├── cli/                    # Unified CLI tool (v0.1.0)
+│   ├── studio/                 # Interactive playground (planned)
+│   └── graph/                  # Data model and querying (stub)
 └── turbo.json                   # Turborepo configuration
 ```
 
@@ -181,5 +191,9 @@ MIT
 
 - 📖 [Architecture Details](./CLAUDE.md) - Technical implementation and development guide
 - 📦 [Extract Package](./packages/extract) - Component metadata extraction
+- 🔗 [Resolve Package](./packages/resolve) - Module and component resolution
+- 📝 [Template Package](./packages/template) - Documentation template engine
+- 🔧 [CLI Package](./packages/cli) - Unified command-line interface
+- 🎨 [Studio Package](./packages/studio) - Interactive playground (planned)
 - 🐛 [Report Issues](https://github.com/tapestrylab/tapestry/issues)
 - 💬 [Discussions](https://github.com/tapestrylab/tapestry/discussions)

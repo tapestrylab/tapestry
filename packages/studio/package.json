@@ -1,0 +1,48 @@
+{
+  "name": "@tapestrylab/studio",
+  "version": "0.0.0",
+  "description": "Interactive web-based playground for design systems and component documentation",
+  "type": "module",
+  "keywords": [
+    "design-system",
+    "component",
+    "documentation",
+    "playground",
+    "interactive",
+    "editor",
+    "preview",
+    "tapestry"
+  ],
+  "homepage": "https://github.com/tapestrylab/tapestry/tree/main/packages/studio#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tapestrylab/tapestry.git",
+    "directory": "packages/studio"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Tapestry Lab",
+    "url": "https://github.com/tapestrylab"
+  },
+  "scripts": {
+    "dev": "echo '@tapestrylab/studio: dev server not implemented yet'",
+    "build": "echo '@tapestrylab/studio: build not implemented yet'",
+    "preview": "echo '@tapestrylab/studio: preview not implemented yet'",
+    "test": "echo '@tapestrylab/studio: tests not implemented yet'",
+    "test:watch": "echo '@tapestrylab/studio: test watch not implemented yet'",
+    "test:ui": "echo '@tapestrylab/studio: test UI not implemented yet'",
+    "test:ci": "echo '@tapestrylab/studio: CI tests not implemented yet'",
+    "type-check": "echo '@tapestrylab/studio: type checking not implemented yet'",
+    "lint": "echo '@tapestrylab/studio: linting not implemented yet'",
+    "format": "echo '@tapestrylab/studio: formatting not implemented yet'"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "peerDependencies": {},
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
