@@ -25,7 +25,7 @@ Tapestry is a monorepo that provides a comprehensive toolkit for building, docum
 
 ### Planned Packages
 
-- **[@tapestrylab/studio](packages/studio)** - Interactive web-based playground for design systems (🚧 planned)
+- **[@tapestrylab/studio](packages/studio)** - TipTap-based documentation editor with templates and custom doc components (🚧 planned)
 - **[@tapestrylab/graph](packages/graph)** - Data model and querying layer (🚧 stub)
 
 ## Getting Started
@@ -117,7 +117,7 @@ tapestry/
 │   ├── resolve/                # Module and component resolution (v0.2.0)
 │   ├── template/               # Documentation template engine (v0.2.0)
 │   ├── cli/                    # Unified CLI tool (v0.1.0)
-│   ├── studio/                 # Interactive playground (planned)
+│   ├── studio/                 # TipTap documentation editor (planned)
 │   └── graph/                  # Data model and querying (stub)
 └── turbo.json                   # Turborepo configuration
 ```

@@ -1,16 +1,17 @@
 {
   "name": "@tapestrylab/studio",
   "version": "0.0.0",
-  "description": "Interactive web-based playground for design systems and component documentation",
+  "description": "TipTap-based documentation editor for design systems with built-in templates and custom doc components",
   "type": "module",
   "keywords": [
     "design-system",
-    "component",
     "documentation",
-    "playground",
-    "interactive",
     "editor",
-    "preview",
+    "tiptap",
+    "wysiwyg",
+    "markdown",
+    "mdx",
+    "templates",
     "tapestry"
   ],
   "homepage": "https://github.com/tapestrylab/tapestry/tree/main/packages/studio#readme",

@@ -19,7 +19,7 @@ tapestry/
 │   ├── resolve/                # Module/component resolution system (v0.2.0)
 │   ├── template/               # Documentation template engine (v0.2.0)
 │   ├── cli/                    # Unified CLI tool (v0.1.0)
-│   ├── studio/                 # Interactive playground (planned)
+│   ├── studio/                 # TipTap documentation editor (planned)
 │   └── graph/                  # Data model and querying (stub)
 ├── turbo.json                   # Turborepo task pipeline configuration
 ├── .changeset/                  # Changesets for version management
@@ -35,7 +35,7 @@ tapestry/
 
 **Planned Packages:**
 
-- `@tapestrylab/studio` - Interactive web-based playground for design systems (see `packages/studio/README.md`)
+- `@tapestrylab/studio` - TipTap-based documentation editor with templates and custom doc components (see `packages/studio/README.md`)
 - `@tapestrylab/graph` - Data model and querying utilities (stub)
 
 ## Development Commands
@@ -311,28 +311,29 @@ The `@tapestrylab/cli` package provides a unified CLI for all Tapestry tools.
 
 ### Studio Package (Planned)
 
-The `@tapestrylab/studio` package will be an interactive web-based playground for design systems.
+The `@tapestrylab/studio` package is a TipTap-based documentation editor for design systems.
 
 **See:** `packages/studio/README.md` and `packages/studio/CLAUDE.md`
 
 **Quick summary:**
 
-- Interactive component playground with live preview
-- Monaco-based code editor with TypeScript support
-- Automatic metadata extraction and documentation generation
-- CDN-powered module resolution for npm packages
-- Integration with all Tapestry packages (extract, resolve, template)
-- React + Vite application with modern UI (Radix, Tailwind)
-- Shareable playground URLs and component gallery
+- TipTap-powered WYSIWYG editor for documentation authoring
+- Built-in templates (Component, Pattern, General documentation)
+- Custom documentation components (Do's/Don'ts, Props Tables, Code Examples, Callouts, Comparisons)
+- Auto-extract component metadata with `@tapestrylab/extract` integration
+- Export to multiple formats (Markdown, MDX, HTML)
+- React + Vite application with Radix UI and Tailwind CSS
+- Slash commands for quick component insertion
 
 **Planned Features:**
 
-- Multi-framework support (React, Vue, Svelte)
-- Real-time component preview in sandboxed iframe
-- Auto-generated props control panel
-- Live documentation generation
-- Component gallery and templates
-- Community sharing and collaboration
+- Rich text editing with markdown support
+- Template customization system
+- Auto-generated props tables from component metadata
+- Syntax-highlighted code blocks
+- Real-time collaboration (Yjs integration)
+- Version history and publishing workflows
+- Template library and asset management
 
 ### Planned Packages
 
