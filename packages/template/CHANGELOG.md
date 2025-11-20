@@ -1,5 +1,13 @@
 # @tapestrylab/template
 
+## 0.3.1
+
+### Patch Changes
+
+- Updated dependencies [2214bc4]
+  - @tapestrylab/extract@0.3.1
+  - @tapestrylab/resolve@0.2.2
+
 ## 0.3.0
 
 ### Minor Changes
