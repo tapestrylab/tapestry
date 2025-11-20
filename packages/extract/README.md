@@ -69,6 +69,36 @@ const recursive = await extractFromDirectory('./src/components', {
 });
 ```
 
+#### Browser-Compatible Core API
+
+For edge runtimes, browsers, or environments without Node.js (like Convex, Cloudflare Workers, or Vercel Edge Functions), use the `/core` export which provides pure extraction without file system dependencies:
+
+```typescript
+import { createReactExtractor } from "@tapestrylab/extract/core";
+
+// Create an extractor
+const extractor = createReactExtractor();
+
+// Extract from in-memory code (no file I/O needed)
+const sourceCode = `
+  export function Button({ label }: { label: string }) {
+    return <button>{label}</button>;
+  }
+`;
+
+const metadata = await extractor.extract("Button.tsx", sourceCode);
+console.log(metadata); // [{ name: "Button", props: [...], ... }]
+```
+
+**Use cases for `/core`:**
+- ✅ Convex functions (TypeScript edge runtime)
+- ✅ Cloudflare Workers / Vercel Edge Functions
+- ✅ Browser-based code editors (CodeSandbox, StackBlitz)
+- ✅ Build tools that work with in-memory code
+- ✅ Any environment without Node.js file system APIs
+
+The core API only extracts metadata from code strings - you're responsible for providing the source code (from a database, API, user input, etc.).
+
 ## Configuration
 
 Create a `tapestry.config.js` in your project root:

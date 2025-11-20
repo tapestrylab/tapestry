@@ -109,7 +109,8 @@ For detailed implementation information, see `src/extractors/react/README.md`.
 
 ### Entry Points
 
-- **Programmatic API** (`index.ts`): `extract(config?)` function for library usage
+- **Programmatic API** (`index.ts`): `extract(config?)` function for library usage with file system access
+- **Core API** (`core.ts`): Browser-compatible extraction API without Node.js dependencies (for edge runtimes, browsers, Convex, etc.)
 
 ### Output Format
 
@@ -141,6 +142,32 @@ To add support for new component types (e.g., Vue, Svelte):
 5. Update the main README.md to document the new extractor
 
 ## Common Development Tasks
+
+### Using the Core API (Browser-Compatible)
+
+For edge runtimes or environments without Node.js (Convex, Cloudflare Workers, browsers):
+
+```typescript
+import { createReactExtractor } from '@tapestrylab/extract/core';
+
+const extractor = createReactExtractor();
+
+// Extract from in-memory code
+const sourceCode = `
+  export function Button({ label }: { label: string }) {
+    return <button>{label}</button>;
+  }
+`;
+
+const metadata = await extractor.extract('Button.tsx', sourceCode);
+console.log(metadata); // [{ name: "Button", props: [...], ... }]
+```
+
+**Key differences:**
+- No file system access (you provide the code as a string)
+- No config file loading (all configuration is in-memory)
+- No scanning/globbing (you handle file discovery)
+- Pure extraction only (browser/edge compatible)
 
 ### Debugging Extraction Issues
 
