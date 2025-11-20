@@ -23,7 +23,6 @@ export type {
   ExtractedMetadata,
   ExtractError,
   ExtractorPlugin,
-  ExtractionError,
 } from "./types.js";
 
 // Re-export the error class

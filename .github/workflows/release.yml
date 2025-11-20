@@ -12,33 +12,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  check-changesets:
-    name: check changesets
-    runs-on: ubuntu-latest
-    outputs:
-      has-changesets: ${{ steps.check.outputs.result }}
-    steps:
-    - name: checkout
-      uses: actions/checkout@v4
-
-    - name: check changesets
-      id: check
-      run: |
-        # Count changeset files (excluding README.md)
-        changeset_count=$(find .changeset -name '*.md' ! -name 'README.md' 2>/dev/null | wc -l)
-
-        if [ "$changeset_count" -gt 0 ]; then
-          echo "result=true" >> $GITHUB_OUTPUT
-          echo "✓ Found $changeset_count changeset(s)"
-        else
-          echo "result=false" >> $GITHUB_OUTPUT
-          echo "⊘ No changesets found - skipping release"
-        fi
-
   changesets:
     name: changesets
-    needs: check-changesets
-    if: needs.check-changesets.outputs.has-changesets == 'true'
     runs-on: ubuntu-latest
     steps:
     - name: checkout
