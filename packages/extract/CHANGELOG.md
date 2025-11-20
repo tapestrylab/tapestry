@@ -1,5 +1,11 @@
 # @tapestrylab/extract
 
+## 0.3.0
+
+### Minor Changes
+
+- b6cdc99: add browser-compatible /core export
+
 ## 0.2.0
 
 ### Minor Changes
