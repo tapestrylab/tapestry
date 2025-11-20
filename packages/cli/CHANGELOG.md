@@ -1,5 +1,13 @@
 # @tapestrylab/cli
 
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [2214bc4]
+  - @tapestrylab/extract@0.3.1
+  - @tapestrylab/template@0.3.1
+
 ## 0.2.0
 
 ### Minor Changes
