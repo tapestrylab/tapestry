@@ -1,6 +1,6 @@
 {
   "name": "@tapestrylab/resolve",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Unified system for resolving component, docs, and dependency references across the Tapestry ecosystem",
   "type": "module",
   "main": "./dist/index.js",
